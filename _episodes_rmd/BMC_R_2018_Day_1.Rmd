@@ -1,0 +1,623 @@
+---
+title: "Brain & Mind Centre - Introduction into R Workshop"
+subtitle: "Day 1"
+author: "Nicholas Ho, Richard Morris"
+start: true
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    theme: lumen
+    hightlight: github
+    minutes: 180
+    days: 1
+---
+
+```{r setup, include=FALSE}
+source("../bin/chunk-options.R")
+
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = FALSE)
+```
+
+[Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
+
+## Introduction
+
+Welcome to the home page for the Brain & Mind Centre Introduction into R workshop. It is a three day course covering six seperate topics that occur frequently to anyone doing pragmatic data analysis. The content is structured in such a way that the material in a section is independent to the other sections, so if you can only make part of the course this won't impact your learning.
+
+These courses are designed to be informal and free flowing, so whilst there is some material we have prepared, if you have a question then at anytime please let us know and we will be more than happy to assist. If there is anything that we can't answer on the day, we will note it down and make sure that we get back to you with a thorough solution.
+
+## About R
+
+### The R Programming Language
+
+[R](https://www.r-project.org/) is an open source programming language and software environment for statistical computing and graphics that is supported by the R Foundation for Statistical Computing. Today, it is one of the most popular languages, being used all across the world in a wide variety of domains and fields.
+
+### RStudio
+
+[RStudio](https://www.rstudio.com/) is an integrated development environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management.
+
+![Example RStudio Screenshot](RStudioSS.png)
+
+### Installation & Setup
+
+First let's set up the Rstudio panes so that everyone is on the same page.
+
+*Tools* -> *Global Options* -> *Pane Layout*
+
+**Top left:** Console
+
+**Top right:** Source
+
+**Bottom left:** Files, Plots, etc
+
+**Bottom right:** Environment, History, etc
+
+
+### Starting a new R-project
+
+We'll start a new R-project so we can save our progress and relaunch at anytime.
+
+*File* -> *New Project* -> *New Directory* -> *Empty Project*
+
+We'll call our project "introduction_into_r" and save it in, say, "Documents" folder (or "My Documents" for Windows users)
+
+Note that in "Files", you have a new Rproj file.
+
+
+### Install prerequisites
+
+Below is a set of commands to install and load packages that you will need for the next three days and also sets some options which will make the course run smoothly. Please copy and run the below commands in your R console.
+
+```{r installation, eval=FALSE, message=FALSE}
+#  Install the tidyverse and then load it
+install.packages("tidyverse", dependencies = TRUE, repos = "https://cran.csiro.au")
+library(tidyverse)
+
+options(scipen = 999)
+set.seed(2018)
+```
+
+
+### R variable and data types
+
+First, we introduce the common variable types and data types that you'll be working with in R. Commonly, errors involve using the wrong variable or data type
+
+**Variable type** | **Type** | **Example**
+------------|---------------|---------------------------------
+integer | Whole numbers | 1, 100, -9
+numeric | Decimals | 0.1, -0.09, 234.567
+character | Text | "A", "hello", "welcome"
+logical | Booleans | TRUE or FALSE
+factor | Categorical | "green", "blue", "red", "purple"
+
+**Data type** | **Type**
+---------------|------------------------------------------------
+vector | 1D collection of variables of the same type
+matrix | 2D collection of variables of the same type
+data.frame | 2D collection of variables of multiple types
+
+
+![R variable and data types](Rvariablesdata.jpg)
+
+## Getting Started
+
+
+### Working directory
+We've created this project in a "working directory". To check where this is, use:
+```{r}
+getwd()
+```
+
+
+### Calculating things in R
+
+Standard math functions work in R:
+```{r}
+2+3
+
+1/1000
+
+sqrt(2)
+```
+
+We can store values in variables. Variables are a way to both store data and to label data.
+```{r}
+myvariable <- 3
+myvariable
+
+myvariable = 3
+myvariable
+
+3 -> myvariable
+myvariable
+
+
+myvariable^2
+```
+## Variable and DataTypes
+
+There are several different types of data you can use in R. We'll examine a few common ones in a little more detail.
+
+### Text
+Strings are known as "character" in R. Use the double quotes `"` or single quotes `'` to wrap around the string
+```{r}
+myname <- "nick"
+```
+
+We can use the `class()` function to see what data type it is
+```{r}
+class(myname)
+```
+
+### Numbers
+Numbers have different classes. The most common two are `integer` and `numerics`. Integers are whole numbers:
+```{r}
+favourite.integer <- as.integer(8)
+print(favourite.integer)
+class(favourite.integer)
+```
+
+Numbers can be `numeric` which are decimals:
+```{r}
+favourite.numeric <- as.numeric(8.8)
+print(favourite.numeric)
+class(favourite.numeric)
+
+pvalue.threshold <- 0.05
+```
+
+### Logical (True/False)
+We use the `==` to test for equality in R
+```{r}
+class(TRUE)
+
+favourite.numeric == 8.8
+
+favourite.numeric == 9.9
+```
+
+
+### Vectors
+We can create 1D data structures called "vectors".
+```{r}
+1:10
+
+2*(1:10)
+
+seq(0, 10, 2)
+```
+
+
+We can store vectors and perform operations on them.
+```{r}
+myvector <- 1:10
+myvector
+
+2^myvector
+
+b <- c(3,4,5)
+b^2
+
+disorders <- c("autism","ocd", "depression", "ocd", "anxiety", "autism")
+disorders
+```
+
+
+### Factors
+A factor are categorical data. Under the hood, factors are actually integers that have a string label attached to each unique integer.
+```{r}
+disorders <- as.factor(disorders)
+class(disorders)
+```
+
+How many categories are there for ethnicity and what are they?
+```{r}
+levels(disorders)
+
+nlevels(disorders)
+```
+
+A factor can be ordered. This makes sense in the context of a ranking such as a survey response, e.g. Strongly agree to Strong disagree.
+```{r}
+responses <- c("low", "high", "medium", "low", "low", "high", "high", "medium", "medium")
+
+myfactor <- factor(responses, levels = c("low", "medium", "high"))
+
+myorderedfactor <- factor(responses, levels = c("low", "medium", "high"), ordered = TRUE)
+
+levels(myfactor)
+```
+
+Now our factor is ordered, we can find the lowest category by using `min()`
+```{r, error = TRUE}
+min(myfactor) #this will fail
+
+min(myorderedfactor)
+```
+
+
+
+### Working with data
+
+A lot of the time in R, we are working with tables of data, know as "data frames".
+
+Commonly,
+
+**rows** may represent instances e.g. *data points*, *patients*, *events*, *samples*, etc. while
+
+**columns** will represent different types of data associated with each data point or instance e.g. *Name*, *ID*, *location*, *time*, *value*...
+
+Here is an example data frame
+
+```{r}
+bmc.data <- data.frame(fname = c("Alice", "Bob", "Carol", "David"),
+                       gender = as.factor(c("Female", "Male", "Female", "Male")),
+                       disorder = c("autism", "anxiety", "autism", "depression"),
+                       age = c(20, 45, 15, 12),
+                       biomarker1 = c(5.70, 4.96, 1.37, 10.44),
+                       clinicalstage = c("1b", "1a", "1a", "2"),
+                       stringsAsFactors = FALSE)
+```
+
+### Viewing The Data
+Use the function `View()` to visually inspect the data in a new RStudio pane
+```{r eval=FALSE}
+View(bmc.data)
+```
+
+How many rows and columns do we have?
+```{r}
+nrow(bmc.data)
+ncol(bmc.data)
+dim(bmc.data)
+```
+
+
+### Accessing Subsets
+Return the first N rows of your data frame
+```{r}
+head(bmc.data)
+```
+
+The default for the `head()` function is to show the first 6 rows. How do we know this? Type `?` infront of the function name in your console
+```{r}
+?head
+```
+
+Return the first 3 rows of your data frame
+```{r}
+head(bmc.data, n = 3)
+head(bmc.data, 3)
+bmc.data[1:3, ]
+bmc.data[c(1, 2, 3), ]
+bmc.data[c(TRUE, TRUE, TRUE, FALSE), ]
+```
+
+
+Return the last 2 rows in a data set
+```{r}
+tail(bmc.data, 2)
+```
+
+
+Return the "age" column in the data set
+```{r}
+bmc.data$age
+bmc.data[, 4]
+bmc.data[, "age"]
+bmc.data[, c(F, F, F, T, F, F, F)]
+```
+
+Return only the first 3 rows and columns 2 and 5 of the data set
+```{r}
+bmc.data[1:3, c(2,5)]
+```
+
+Return the columns named "fname" and "biomarker1"
+```{r}
+bmc.data[,c("fname", "biomarker1")]
+```
+
+
+### Filtering the data
+
+Return only the rows (patients) who are Female
+```{r}
+bmc.data[bmc.data$gender == "Female", ]
+```
+
+What exactly happened here? We made a vector of `TRUE/FALSE` statements, for each row in which this condition is true and then we subset rows in which the index is true
+```{r}
+females <- bmc.data$gender == "Female"
+females
+
+bmc.data[females, ]
+```
+
+Another way to subset the patients is with the `which()` function
+```{r}
+females <- which(bmc.data$gender == "Female")
+females
+
+bmc.data[females, ]
+bmc.data[which(bmc.data$gender == "Female"), ]
+```
+
+
+What if we want all patients older than 16 years of age?
+```{r}
+bmc.data[bmc.data$age > 16, ]
+```
+
+### Adding records
+Add a new row to the data set using the rbind() function:
+
+```{r eval=FALSE}
+new.person <- data.frame(fname = "Evelyn",
+                         gender = "Female",
+                         disorder = "anxiety",
+                         age = 27,
+                         biomarker1 = 40.8,
+                         clinicalstage = "2")
+
+bmc.data <- rbind(bmc.data, new.person)
+```
+
+
+### Quiz
+1. Return those patients whose clinical stage is "1a"
+
+2. Return those patients whose biomarker1 value is less than 6.7
+
+3. Return just the first name of all patients older than 16 years of age
+
+
+
+
+## Working with more realistic Data
+
+The dataset that we will be using today is taken from University of California, Irvine's Machine Learning Repository. We will be examining the [Autism Screening Adult Data Set](https://archive.ics.uci.edu/ml/datasets/Autism+Screening+Adult). This is data collected by Dr Fadi Fayez Thabtah at NMIT via the mobile app ASD Tests.
+
+Click [here](https://raw.githubusercontent.com/n-ho/bmc_r_workshop_2018/master/_episodes/autism_data.csv) to open the data on your browser. Then, right-click and Save As "autism_data" in the "comma-separated values" or "csv" format into your working directory.
+
+Variable | Definition
+-----------------|------------------------------------------------
+id | The participant's ID number
+AX_Score | Score based on the Autism Spectrum Quotient (AQ) 10 item screening tool [AQ-10](http://docs.autismresearchcentre.com/tests/AQ10.pdf)
+age | Age in years
+gender | Male or Female
+ethnicity | Ethnicities in text form
+jaundice | Whether or not the participant was born with jaundice?
+autism | Whether or not anyone in tbe immediate family has been diagnosed with autism?
+country_of_res| Countries in text format
+used_app_before | Whether the participant has used a screening app
+result | Score from the AQ-10 screening tool
+age_desc | Age as categorical
+relation | Relation of person who completed the test
+Class/ASD | Participant classification
+
+
+### Reading in Data
+
+The first thing to do before we can begin an analysis is loading some data. To do this we can use the below command.
+
+```{r read_data_1}
+autism.data <- read.csv(file = "autism_data.csv",
+                        header = TRUE,
+                        sep = ",",
+                        na.strings = "?")
+```
+
+Before going any further, let's break down what this command does specifically.
+
+1. It reads the file, which could be
+- a file path e.g. `"~/Documents/MyFolder/datafile.csv"`
+- a url like we have here e.g. `"http://www.website.com/subdomain/datafile.csv"`
+2. It specifies that the first row in the csv file contains "header" information i.e. column names
+3. It specifies that neighbouring columns are separated by a comma ","
+4. It specifies that this CSV file uses "?" as the text for missing data
+
+How would we find this out if we didn't know already? Look at the help file:
+```{r eval=FALSE}
+?read.csv
+```
+
+Comma Separated Value (.csv) files are usually the standard, simplest format which is compatible with all sort of different software, e.g. R, python, Excel, MATLAB, ...
+
+But if we needed to read in a different format of data, there's usually a function or a library for doing just that,
+
+e.g.
+in base R:
+
+- `read.csv()`
+- `read.table()`
+
+In the package "xlsx":
+
+- `read.xlsx()`
+
+In the package "haven":
+
+- `read_spss()` for SPSS files
+
+
+### Viewing The Data
+Remember, we use the function `View()` to visually inspect at the data
+```{r, eval = FALSE}
+View(autism.data)
+```
+
+
+What data type is this data?
+```{r}
+class(autism.data)
+```
+
+
+What variables are included in this dataset?
+```{r}
+colnames(autism.data)
+```
+
+
+### Changing The Column Names
+We've a typo in the country of residence column. Let's correct this by first finding the column with the typo.
+```{r}
+colnames(autism.data)
+
+which(colnames(autism.data) == "contry_of_res")
+
+colnames(autism.data)[17] <- "country"
+```
+
+Afterwards, view the data again to check the column names have been changed
+```{r eval=FALSE}
+View(autism.data)
+```
+
+### Add a new column
+Let's create a better participant ID than just 1,2,3,...
+
+The first function we will need is `paste()`. This function concatenates strings. For example;
+```{r}
+paste("hel", "lo")
+```
+
+
+This leaves an unwanted gap, hence we'll use the `sep` parameter
+```{r}
+paste("hel", "lo", sep = "")
+```
+
+Now let's add the letter "P" to the front of the IDS. Then, we'll add this as a new column
+```{r}
+new_ids <- paste( "PatientID_" , autism.data$id, sep = "")
+
+autism.data$pids <- new_ids
+```
+
+Afterwards, view the data again to check the new "pids" column.
+```{r eval=FALSE}
+View(autism.data)
+```
+
+
+
+### Accessing Subsets
+Let's look at all the records for those with a family history of autism:
+```{r}
+family.autism.data <- autism.data[autism.data$autism == "yes",]
+```
+
+What is the average AQ-10 score for those with a familial history of autism?
+```{r}
+mean(family.autism.data$result)
+```
+
+What about for those with no familial history of autism?
+```{r}
+no.family.autism.data <- autism.data[autism.data$autism == "no",]
+mean(no.family.autism.data$result)
+```
+
+Who is the oldest person in the dataset and what is their age?
+```{r}
+max(autism.data$age)
+
+# ignore missing data
+max(autism.data$age, na.rm = TRUE)
+which.max(autism.data$age)
+```
+
+Someone is apparently 383 years old! There are a number of possibilities why this value is here with a range of probabilities from the most likely (the participant made a typo) to the least (the participant is yoda).
+
+For our purposes, let's remove this person. To do so, we'll use the `-` sign in front of the indices we want.
+```{r}
+autism.data <- autism.data[-which.max(autism.data$age), ]
+```
+
+Who is the youngest person in this dataset and how old are they?
+```{r}
+min(autism.data$age, na.rm = TRUE)
+
+which.min(autism.data$age)
+```
+
+
+### Summarising Your Data
+A handy way to inspect your data is to summarise it. To do so, use the `summary()` function
+```{r}
+summary(autism.data)
+```
+
+
+Use the summary function to return a quick summary of only the country column
+```{r}
+summary(autism.data$country)
+```
+
+
+Why does the summary function give you quartiles for some column and provide counts for others? Remember that data frames are 2D collections that can hold data of different types
+```{r}
+class(autism.data$age)
+summary(autism.data$age)
+
+
+class(autism.data$country)
+summary(autism.data$country)
+```
+
+
+Another way to summarise a `factor` column is to use the `table()` function
+```{r}
+table(autism.data$country)
+```
+
+
+A difference between using the `summary()` function over the `table()` function for factors is that by default, the `summary()` function also counts `NA` values whereas in this must be specified for `table()`
+```{r}
+summary(autism.data$ethnicity)
+
+table(autism.data$ethnicity)
+
+table(autism.data$ethnicity, useNA = "ifany")
+```
+
+
+###Quiz
+
+1. What is the proportions to males to females in this dataset?
+
+2. Return those participants whose `gender` is female
+
+3. Return those participants whose `gender` is female into a new data frame called "females.autism.data"
+
+4. What is the mean `result` score for those classified as ASD
+
+5. What is the mean `result` score for those not classified as ASD
+
+
+
+
+
+
+## Writing the data out
+Use the write.table() function to make the data file a text file
+
+```{r}
+write.table(x = bmc.data,
+            file = "bmcdata.txt",
+            row.names = FALSE,
+            col.names = TRUE,
+            sep = ",")
+```
+
+Use the write.csv() function to make the datafile a csv (comma separated values) file
+```{r}
+write.csv(x = bmc.data,
+          file = "bmcdata.csv",
+          row.names = FALSE)
+```
