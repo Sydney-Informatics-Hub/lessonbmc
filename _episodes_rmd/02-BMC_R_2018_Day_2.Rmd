@@ -2,18 +2,12 @@
 title: "Brain & Mind Centre - Introduction into R Workshop"
 subtitle: "Day 2"
 author: "Nicholas Ho, Richard Morris"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: false
-    theme: lumen
-    hightlight: github
+source: Rmd
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      cache = FALSE)
+```{r echo=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("02-")
 ```
 
 [Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
@@ -33,20 +27,20 @@ These allow you to control the flow of execution of a script. Common ones includ
 ### If statements
 ```{r, eval=FALSE, message=FALSE}
 
-if (condition_is_satisfied) 
+if (condition_is_satisfied)
 {
     # do something
-} 
+}
 ```
 
 Sometimes, we want to do something even if the `if` statement returns `FALSE`. In such a case, we use an `else` statement
 ### If-else statements
 ```{r, eval=FALSE, message=FALSE}
 
-if (condition_is_satisfied) 
+if (condition_is_satisfied)
 {
   # do something
-} else 
+} else
 {
   # do something else
 }
@@ -74,7 +68,7 @@ if (x > 1) {
   print("x is greater than 1")
 } else {
   print("x is less than 1")
-} 
+}
 ```
 
 
@@ -98,13 +92,13 @@ if (x > 1) {
   print ("x is less than 1")
 } else {
   print("x is equal to 1")
-} 
+}
 ```
 
 
 ## Quiz
 
-Imagine a patient has just completed the SF-36 questionnaire and we have calcualted that this patient has a MHI5 score of 45. 
+Imagine a patient has just completed the SF-36 questionnaire and we have calcualted that this patient has a MHI5 score of 45.
 
 Write a set of if-else statements that will test the variable `mhi5_score`. Print out the characters “mental ill-health” if it is less than 52 and “good mental health” if it is greater than or equal to 52
 ```{r}
@@ -151,7 +145,7 @@ for (fruit in fruits) print(fruit)
 ### For loop examples
 We’ve seen that we can use `for` loops for vectors. We can also use `for` loops for data frames. Let's read in our dataset from last week with the same modifications
 ```{r}
-autism.data <- read.csv(file = "autism_data.csv",
+autism.data <- read.csv(file = "data/autism_data.csv",
                         header = TRUE,
                         sep = ",",
                         na.strings = "?")
@@ -161,7 +155,7 @@ colnames(autism.data)[17] <- "country"
 
 # make a new column of patient IDs called pids
 new_ids <- paste( "PatientID_" , autism.data$id, sep = "")
-autism.data$pids <- new_ids 
+autism.data$pids <- new_ids
 
 # remove the patient who was 383 years old
 autism.data <- autism.data[-which.max(autism.data$age), ]
@@ -209,9 +203,9 @@ for (i in 1:numrows) {
 # for each row, if the participant is ASD, print out their test result
 numrows <- nrow(autism.data)
 for (i in 1:numrows) {
-  
+
   # write your code here
-  
+
 }
 ```
 
@@ -221,9 +215,9 @@ for (i in 1:numrows) {
 # for each row, if the participant is ASD, print out their test result
 numrows <- nrow(autism.data)
 for (i in 1:numrows) {
-  
+
   # write your code here
-  
+
 }
 ```
 
@@ -251,7 +245,7 @@ while (i < 10) {
 
 A break statement is used in a loop to stop the iterations and flow the control outside of the loop.
 ```{r}
-x <- 1:10 
+x <- 1:10
 for (i in x){
   if (i == 2){
      break
@@ -264,7 +258,7 @@ for (i in x){
 
 Next statement enables to skip the current iteration of a loop without terminating it.
 ```{r}
-x <- 1:4 
+x <- 1:4
 for (i in x) {
   if (i == 2){
     next
@@ -280,7 +274,7 @@ If you have to repeat the same few lines of code more than once, then you really
 
 For example:
 ```{r}
-# Make a function that performs addition 
+# Make a function that performs addition
 add <- function(a, b) {
     return(a + b)
 }
@@ -294,13 +288,13 @@ Create a function that accepts a data frame and returns the mean of the "age" co
 ```{r}
 findMeanAge <- function(somedataframe) {
   ages <- 0
-  
+
   for (i in 1:nrow(somedataframe)){
     ages <- ages + somedataframe[i, "age"]
   }
-  
+
   mean_age <- ages / nrow(somedataframe)
-  
+
   return(mean_age)
 }
 ```
@@ -327,7 +321,7 @@ mean(autism.data$age, na.rm = TRUE)
 
 ## Data wrangling
 
-![](tidyverse_website.png)
+![](tidyr.jpg) #corrected here from tidyverse_website.png not sure if this is intended behavior TODO
 
 So far, we've been using R's base functions to perform our data wrangling and manipulation. I would highly encourage you to learn to use the [tidyverse](https://www.tidyverse.org/) collection of data wrangling and visualisation tools. These are excellent tools that allows you to write elegent, legible code that gets your data into the right shape prior to analysis.
 
@@ -339,26 +333,26 @@ library(tidyverse)
 
 ## haven
 
-![](haven_logo.png)
+ TODO add haven logo here
 
 haven is a package within the tidyverse that allows you to read in data from different sources. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
 
 ```{r, warning=FALSE}
 # load haven
 library(haven)
-autism.data.spss <- read_spss("autism_data.sav")
+#autism.data.spss <- read_spss("data/autism_data.sav") #TODO LOAD THIS DATA????
 ```
 
 
-Next, we'll step into one of the most popular tidyverse package called [dplyr](https://dplyr.tidyverse.org/). 
+Next, we'll step into one of the most popular tidyverse package called [dplyr](https://dplyr.tidyverse.org/).
 
 ## dpylr
 
-![](hex-dplyr.jpeg)
+TODO add hex-dplyr.jpeg
 
 `dpylr` allows you to perform some of the most common data manipulation tasks you'll encounter in R. The background of the `dplyr` package is that it is a "grammar" of data manipulation and that its functions are a set of verbs.
 
-You will also notice that the spelling follows British spelling rather than American (Hadley Wickham, author and maintainer of the tidyverse, is from New Zealand), but they can actually be used interchangeably. For example, `summarise()` and `summarize()` perform the same function. 
+You will also notice that the spelling follows British spelling rather than American (Hadley Wickham, author and maintainer of the tidyverse, is from New Zealand), but they can actually be used interchangeably. For example, `summarise()` and `summarize()` perform the same function.
 
 ### select()
 The `select()` function allows you to pick or remove variables based on their names. Note that you do not use `"` nor `'` to wrap the column names as you would with a base R function
@@ -383,14 +377,14 @@ autism.data %>% select(age, gender, result) %>% head()
 
 Or let's make this more legible
 ```{r}
-autism.data %>% 
-  select(age, gender, result) %>% 
+autism.data %>%
+  select(age, gender, result) %>%
   head()
 ```
 
 Redirect the output of this chain of pipes into a new dataframe
 ```{r}
-autism.data %>% 
+autism.data %>%
   select(age, gender, result) -> selected.autism.data
 ```
 
@@ -398,23 +392,23 @@ autism.data %>%
 ### filter()
 The `filter()` function allows you to filter rows of your dataset that match some condition. We can also combine this with some of R' base functions. Here, we'll use `head()` to restrict the output number of rows
 ```{r}
-autism.data %>% 
-  filter(age == 17) %>% 
+autism.data %>%
+  filter(age == 17) %>%
   head()
 ```
 
 Combine this with the `select()` function to select only the age, gender and country of the 17 year olds in the autism dataset
 ```{r}
-autism.data %>% 
-  filter(age == 17) %>% 
+autism.data %>%
+  filter(age == 17) %>%
   select(age, gender, country) %>%
   head()
 ```
 
 What are the counts for countries of the 17 year olds in the autism dataset
 ```{r}
-autism.data %>% 
-  filter(age == 17) %>% 
+autism.data %>%
+  filter(age == 17) %>%
   select(country) %>%
   table()
 ```
@@ -422,8 +416,8 @@ autism.data %>%
 ### arrange()
 The `arrange()` function allows you to reorder the rows of your dataset
 ```{r}
-autism.data %>% 
-  arrange(age) %>% 
+autism.data %>%
+  arrange(age) %>%
   head()
 ```
 
@@ -447,7 +441,7 @@ autism.data %>%
 You can use the `transmute()` function to keep only the column you created
 ```{r}
 autism.data %>%
-  transmute(agerank = rank(age)) %>% 
+  transmute(agerank = rank(age)) %>%
   head()
 ```
 
@@ -476,17 +470,16 @@ autism.data %>%
 1. Create a summary table for mean `result` for a grouping by gender, autism class and family history of autism
 ```{r, eval = FALSE}
 autism.data %>%
-  
+
   # your code here
-  
+
 ```
 
 
 2. (Intermediate) Do the same as above and now arrange from the lowest mean `result` to the highest
 ```{r, eval = FALSE}
 autism.data %>%
-  
-  # your code here
-  
-```
 
+  # your code here
+
+```

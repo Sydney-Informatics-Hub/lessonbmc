@@ -1,24 +1,26 @@
 ---
-title: "Brain & Mind Centre - Introduction into R Workshop"
-subtitle: "Day 1"
+title: "Basic R concepts"
 author: "Nicholas Ho, Richard Morris"
-start: true
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: false
-    theme: lumen
-    hightlight: github
-    minutes: 180
-    days: 1
+keypoints:
+- A single raster file can contain multiple bands or layers.
+- Use the `stack()` function to load all bands in a multi-layer raster file into R.
+- Individual bands within a stack can be accessed, analyzed, and visualized using
+  the same functions as single bands.
+objectives:
+- Identify a single vs. a multi-band raster file.
+- Import multi-band rasters into R using the `raster` package.
+- Plot multi-band color image rasters in R using the `ggplot` package.
+questions: How can I visualize individual and multiple bands in a raster object?
+source: Rmd
+start: 520
+subtitle: Day 1
+teaching: 120
+exercises: 60
 ---
 
-```{r setup, include=FALSE}
+```{r echo=FALSE}
 source("../bin/chunk-options.R")
-
-knitr::opts_chunk$set(echo = TRUE,
-                      cache = FALSE)
+knitr_fig_path("01-")
 ```
 
 [Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
@@ -405,7 +407,7 @@ Class/ASD | Participant classification
 The first thing to do before we can begin an analysis is loading some data. To do this we can use the below command.
 
 ```{r read_data_1}
-autism.data <- read.csv(file = "autism_data.csv",
+autism.data <- read.csv(file = "data/autism_data.csv",
                         header = TRUE,
                         sep = ",",
                         na.strings = "?")

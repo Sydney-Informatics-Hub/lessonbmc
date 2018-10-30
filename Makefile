@@ -42,7 +42,7 @@ clean :
 	@find . -name '*~' -exec rm {} \;
 	@find . -name '*.pyc' -exec rm {} \;
 
-## clean-rmd        : clean intermediate R files (that need to be committed to the repo).
+## clean-rmd        : clean intermediate R files (that need to be committed to the repo). #the below may need to be renamed clear
 clean-rmd :
 	@rm -rf ${RMD_DST}
 	@rm -rf fig/rmd-*
@@ -88,8 +88,12 @@ HTML_DST = \
 ## lesson-md        : convert Rmarkdown files to markdown
 lesson-md : ${RMD_DST}
 
-_episodes/%.md: _episodes_rmd/%.Rmd
-	@bin/knit_lessons.sh $< $@
+_episodes/%.md: _episodes_rmd/%.Rmd #DVfix
+	@bin/knit_lessons.sh $< $@ #DVfix
+
+#${RMD_DST} : ${RMD_SRC}
+#	@bin/knit_lessons.sh ${RMD_SRC}
+
 
 ## lesson-check     : validate lesson Markdown.
 lesson-check : lesson-fixme
