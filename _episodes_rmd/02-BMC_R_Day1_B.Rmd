@@ -230,7 +230,7 @@ head(bmc.data)
 ```
 
 The default for the `head()` function is to show the first 6 rows. How do we know this? Type `?` infront of the function name in your console
-```{r}
+```{r eval=FALSE}
 ?head
 ```
 
@@ -315,277 +315,32 @@ bmc.data <- rbind(bmc.data, new.person)
 
 > ## Section quiz
 >
-> This is the body of the challenge.
+> 1. Return those patients whose clinical stage is "1a"
 >
-> ~~~
-> it may include some code
-> ~~~
+> 2. Return those patients whose biomarker1 value is less than 6.7
+>
+> 3. Return just the first name of all patients older than 16 years of age
+>
 > {: .source}
 >
 > > ## Solution
 > >
-> > This is the body of the solution.
+> > 1. Return those patients whose clinical stage is "1a"
 > >
 > > ~~~
-> > it may also include some code
+> > bmc.data[bmc.data$clinicalstage == "1a",]
+> > ~~~
+> > 2. Return those patients whose biomarker1 value is less than 6.7
+> >
+> > ~~~
+> > bmc.data[bmc.data$biomarker1 < 6.7,]
+> > ~~~
+> > 3. Return just the first name of all patients older than 16 years of age
+> >
+> > ~~~
+> > bmc.data[bmc.data$age > 16,]$fname
+> > bmc.data[bmc.data$age > 16,"fname"]
 > > ~~~
 > > {: .output}
 > {: .solution}
 {: .challenge}
-
-
-
-### Quiz
-1. Return those patients whose clinical stage is "1a"
-
-2. Return those patients whose biomarker1 value is less than 6.7
-
-3. Return just the first name of all patients older than 16 years of age
-
-
-
-
-## Working with more realistic Data
-
-The dataset that we will be using today is taken from University of California, Irvine's Machine Learning Repository. We will be examining the [Autism Screening Adult Data Set](https://archive.ics.uci.edu/ml/datasets/Autism+Screening+Adult). This is data collected by Dr Fadi Fayez Thabtah at NMIT via the mobile app ASD Tests.
-
-Click [here](https://raw.githubusercontent.com/n-ho/bmc_r_workshop_2018/master/_episodes/autism_data.csv) to open the data on your browser. Then, right-click and Save As "autism_data" in the "comma-separated values" or "csv" format into your working directory.
-
-Variable | Definition
------------------|------------------------------------------------
-id | The participant's ID number
-AX_Score | Score based on the Autism Spectrum Quotient (AQ) 10 item screening tool [AQ-10](http://docs.autismresearchcentre.com/tests/AQ10.pdf)
-age | Age in years
-gender | Male or Female
-ethnicity | Ethnicities in text form
-jaundice | Whether or not the participant was born with jaundice?
-autism | Whether or not anyone in tbe immediate family has been diagnosed with autism?
-country_of_res| Countries in text format
-used_app_before | Whether the participant has used a screening app
-result | Score from the AQ-10 screening tool
-age_desc | Age as categorical
-relation | Relation of person who completed the test
-Class/ASD | Participant classification
-
-
-### Reading in Data
-
-The first thing to do before we can begin an analysis is loading some data. To do this we can use the below command.
-
-```{r read_data_1}
-autism.data <- read.csv(file = "data/autism_data.csv",
-                        header = TRUE,
-                        sep = ",",
-                        na.strings = "?")
-```
-
-Before going any further, let's break down what this command does specifically.
-
-1. It reads the file, which could be
-- a file path e.g. `"~/Documents/MyFolder/datafile.csv"`
-- a url like we have here e.g. `"http://www.website.com/subdomain/datafile.csv"`
-2. It specifies that the first row in the csv file contains "header" information i.e. column names
-3. It specifies that neighbouring columns are separated by a comma ","
-4. It specifies that this CSV file uses "?" as the text for missing data
-
-How would we find this out if we didn't know already? Look at the help file:
-```{r eval=FALSE}
-?read.csv
-```
-
-Comma Separated Value (.csv) files are usually the standard, simplest format which is compatible with all sort of different software, e.g. R, python, Excel, MATLAB, ...
-
-But if we needed to read in a different format of data, there's usually a function or a library for doing just that,
-
-e.g.
-in base R:
-
-- `read.csv()`
-- `read.table()`
-
-In the package "xlsx":
-
-- `read.xlsx()`
-
-In the package "haven":
-
-- `read_spss()` for SPSS files
-
-
-### Viewing The Data
-Remember, we use the function `View()` to visually inspect at the data
-```{r, eval = FALSE}
-View(autism.data)
-```
-
-
-What data type is this data?
-```{r}
-class(autism.data)
-```
-
-
-What variables are included in this dataset?
-```{r}
-colnames(autism.data)
-```
-
-
-### Changing The Column Names
-We've a typo in the country of residence column. Let's correct this by first finding the column with the typo.
-```{r}
-colnames(autism.data)
-
-which(colnames(autism.data) == "contry_of_res")
-
-colnames(autism.data)[17] <- "country"
-```
-
-Afterwards, view the data again to check the column names have been changed
-```{r eval=FALSE}
-View(autism.data)
-```
-
-### Add a new column
-Let's create a better participant ID than just 1,2,3,...
-
-The first function we will need is `paste()`. This function concatenates strings. For example;
-```{r}
-paste("hel", "lo")
-```
-
-
-This leaves an unwanted gap, hence we'll use the `sep` parameter
-```{r}
-paste("hel", "lo", sep = "")
-```
-
-Now let's add the letter "P" to the front of the IDS. Then, we'll add this as a new column
-```{r}
-new_ids <- paste( "PatientID_" , autism.data$id, sep = "")
-
-autism.data$pids <- new_ids
-```
-
-Afterwards, view the data again to check the new "pids" column.
-```{r eval=FALSE}
-View(autism.data)
-```
-
-
-
-### Accessing Subsets
-Let's look at all the records for those with a family history of autism:
-```{r}
-family.autism.data <- autism.data[autism.data$autism == "yes",]
-```
-
-What is the average AQ-10 score for those with a familial history of autism?
-```{r}
-mean(family.autism.data$result)
-```
-
-What about for those with no familial history of autism?
-```{r}
-no.family.autism.data <- autism.data[autism.data$autism == "no",]
-mean(no.family.autism.data$result)
-```
-
-Who is the oldest person in the dataset and what is their age?
-```{r}
-max(autism.data$age)
-
-# ignore missing data
-max(autism.data$age, na.rm = TRUE)
-which.max(autism.data$age)
-```
-
-Someone is apparently 383 years old! There are a number of possibilities why this value is here with a range of probabilities from the most likely (the participant made a typo) to the least (the participant is yoda).
-
-For our purposes, let's remove this person. To do so, we'll use the `-` sign in front of the indices we want.
-```{r}
-autism.data <- autism.data[-which.max(autism.data$age), ]
-```
-
-Who is the youngest person in this dataset and how old are they?
-```{r}
-min(autism.data$age, na.rm = TRUE)
-
-which.min(autism.data$age)
-```
-
-
-### Summarising Your Data
-A handy way to inspect your data is to summarise it. To do so, use the `summary()` function
-```{r}
-summary(autism.data)
-```
-
-
-Use the summary function to return a quick summary of only the country column
-```{r}
-summary(autism.data$country)
-```
-
-
-Why does the summary function give you quartiles for some column and provide counts for others? Remember that data frames are 2D collections that can hold data of different types
-```{r}
-class(autism.data$age)
-summary(autism.data$age)
-
-
-class(autism.data$country)
-summary(autism.data$country)
-```
-
-
-Another way to summarise a `factor` column is to use the `table()` function
-```{r}
-table(autism.data$country)
-```
-
-
-A difference between using the `summary()` function over the `table()` function for factors is that by default, the `summary()` function also counts `NA` values whereas in this must be specified for `table()`
-```{r}
-summary(autism.data$ethnicity)
-
-table(autism.data$ethnicity)
-
-table(autism.data$ethnicity, useNA = "ifany")
-```
-
-
-###Quiz
-
-1. What is the proportions to males to females in this dataset?
-
-2. Return those participants whose `gender` is female
-
-3. Return those participants whose `gender` is female into a new data frame called "females.autism.data"
-
-4. What is the mean `result` score for those classified as ASD
-
-5. What is the mean `result` score for those not classified as ASD
-
-
-
-
-
-
-## Writing the data out
-Use the write.table() function to make the data file a text file
-
-```{r}
-write.table(x = bmc.data,
-            file = "bmcdata.txt",
-            row.names = FALSE,
-            col.names = TRUE,
-            sep = ",")
-```
-
-Use the write.csv() function to make the datafile a csv (comma separated values) file
-```{r}
-write.csv(x = bmc.data,
-          file = "bmcdata.csv",
-          row.names = FALSE)
-```
