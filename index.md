@@ -8,7 +8,10 @@ permalink: index.html  # Is the only page that doesn't follow the pattern /:path
 <center><b>PLEASE NOTE: This workshop is open to all Brain and Mind Centre researchers and students only </b></center>
 
 ## General Information
-Welcome to the home page for the Brain & Mind Centre R workshop. It is a three day workshop covering six seperate topics that occur frequently to anyone doing pragmatic data analysis. The content is structured in such a way that the material in a section is independent to the other sections, so if you can only make part of the course this won't impact your learning.
+Welcome to the home page for the Brain & Mind Centre Introduction into R workshop. It is a three day course covering six seperate topics that occur frequently to anyone doing pragmatic data analysis. The content is structured in such a way that the material in a section is independent to the other sections, so if you can only make part of the course this won't impact your learning.
+
+These courses are designed to be informal and free flowing, so whilst there is some material we have prepared, if you have a question then at anytime please let us know and we will be more than happy to assist. If there is anything that we can't answer on the day, we will note it down and make sure that we get back to you with a thorough solution.
+
 
 **Where**: Room 301/2, Building F, 94 Mallett St, Camperdown NSW 2050. Get directions with [OpenStreetMap](https://www.openstreetmap.org/?mlat=-33.888759&mlon=%20151.178104&zoom=16) or [Google Maps](https://maps.google.com/maps?q=-33.888759,%20151.178104).
 

@@ -3,7 +3,7 @@ title: "Brain & Mind Centre - Introduction into R Workshop"
 subtitle: "Day 3"
 author: "Nicholas Ho, Richard Morris"
 source: Rmd
-
+subtitle: Day 3
 ---
 
 ```{r echo=FALSE}

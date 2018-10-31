@@ -1,16 +1,16 @@
 ---
-title: "Basic R concepts"
-author: "Nicholas Ho, Richard Morris"
+title: "R variables and data types"
+author: "Nicholas Ho, Richard Morris, Darya Vanichkina"
 keypoints:
-- A single raster file can contain multiple bands or layers.
-- Use the `stack()` function to load all bands in a multi-layer raster file into R.
-- Individual bands within a stack can be accessed, analyzed, and visualized using
-  the same functions as single bands.
+- R supports multiple variable types
+- Errors often result because of trying to perform an unsupported operation on a specific data type
+- Errors can be cryptic to interpret
+- We can use helper packages to import and filter data in R
 objectives:
-- Identify a single vs. a multi-band raster file.
-- Import multi-band rasters into R using the `raster` package.
-- Plot multi-band color image rasters in R using the `ggplot` package.
-questions: How can I visualize individual and multiple bands in a raster object?
+- Assign values to objects in R.
+- Solve simple arithmetic operations in R.
+- Describe what a data frame is.
+questions: What R data types do you think will be most useful in your own work?
 source: Rmd
 start: 520
 subtitle: Day 1
@@ -25,65 +25,9 @@ knitr_fig_path("01-")
 
 [Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
 
-## Introduction
-
-Welcome to the home page for the Brain & Mind Centre Introduction into R workshop. It is a three day course covering six seperate topics that occur frequently to anyone doing pragmatic data analysis. The content is structured in such a way that the material in a section is independent to the other sections, so if you can only make part of the course this won't impact your learning.
-
-These courses are designed to be informal and free flowing, so whilst there is some material we have prepared, if you have a question then at anytime please let us know and we will be more than happy to assist. If there is anything that we can't answer on the day, we will note it down and make sure that we get back to you with a thorough solution.
-
-## About R
-
-### The R Programming Language
-
-[R](https://www.r-project.org/) is an open source programming language and software environment for statistical computing and graphics that is supported by the R Foundation for Statistical Computing. Today, it is one of the most popular languages, being used all across the world in a wide variety of domains and fields.
-
-### RStudio
-
-[RStudio](https://www.rstudio.com/) is an integrated development environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management.
-
-![Example RStudio Screenshot](RStudioSS.png)
-
-### Installation & Setup
-
-First let's set up the Rstudio panes so that everyone is on the same page.
-
-*Tools* -> *Global Options* -> *Pane Layout*
-
-**Top left:** Console
-
-**Top right:** Source
-
-**Bottom left:** Files, Plots, etc
-
-**Bottom right:** Environment, History, etc
 
 
-### Starting a new R-project
-
-We'll start a new R-project so we can save our progress and relaunch at anytime.
-
-*File* -> *New Project* -> *New Directory* -> *Empty Project*
-
-We'll call our project "introduction_into_r" and save it in, say, "Documents" folder (or "My Documents" for Windows users)
-
-Note that in "Files", you have a new Rproj file.
-
-
-### Install prerequisites
-
-Below is a set of commands to install and load packages that you will need for the next three days and also sets some options which will make the course run smoothly. Please copy and run the below commands in your R console.
-
-```{r installation, eval=FALSE, message=FALSE}
-#  Install the tidyverse and then load it
-install.packages("tidyverse", dependencies = TRUE, repos = "https://cran.csiro.au")
-library(tidyverse)
-
-options(scipen = 999)
-set.seed(2018)
-```
-
-
-### R variable and data types
+### R variables and data types
 
 First, we introduce the common variable types and data types that you'll be working with in R. Commonly, errors involve using the wrong variable or data type
 
@@ -139,7 +83,7 @@ myvariable
 
 myvariable^2
 ```
-## Variable and DataTypes
+## Variable and Data Types
 
 There are several different types of data you can use in R. We'll examine a few common ones in a little more detail.
 
@@ -155,7 +99,7 @@ class(myname)
 ```
 
 ### Numbers
-Numbers have different classes. The most common two are `integer` and `numerics`. Integers are whole numbers:
+Numbers have different classes. The most common two are `integer` and `numeric`. Integers are whole numbers:
 ```{r}
 favourite.integer <- as.integer(8)
 print(favourite.integer)
@@ -209,7 +153,7 @@ disorders
 
 
 ### Factors
-A factor are categorical data. Under the hood, factors are actually integers that have a string label attached to each unique integer.
+Factors store categorical data. Under the hood, factors are actually integers that have a string label attached to each unique integer. For example, if we have a long list of Male/Female labels for each of our patients, this will be stored a "row" of zeros and ones by R. 
 ```{r}
 disorders <- as.factor(disorders)
 class(disorders)
@@ -232,6 +176,7 @@ myorderedfactor <- factor(responses, levels = c("low", "medium", "high"), ordere
 
 levels(myfactor)
 ```
+By default, factors will be ordered in alphabetical order.
 
 Now our factor is ordered, we can find the lowest category by using `min()`
 ```{r, error = TRUE}
@@ -252,7 +197,9 @@ Commonly,
 
 **columns** will represent different types of data associated with each data point or instance e.g. *Name*, *ID*, *location*, *time*, *value*...
 
-Here is an example data frame
+It is good practive to have a single row for every instance, and an individual, distinct measurement in each of the columns (not multiple measurements in one or redunant information in multiple columns).
+
+Here is an example data frame:
 
 ```{r}
 bmc.data <- data.frame(fname = c("Alice", "Bob", "Carol", "David"),
@@ -265,7 +212,7 @@ bmc.data <- data.frame(fname = c("Alice", "Bob", "Carol", "David"),
 ```
 
 ### Viewing The Data
-Use the function `View()` to visually inspect the data in a new RStudio pane
+Use the function `View()` to visually inspect the data in a new RStudio pane:
 ```{r eval=FALSE}
 View(bmc.data)
 ```
@@ -367,6 +314,27 @@ new.person <- data.frame(fname = "Evelyn",
 
 bmc.data <- rbind(bmc.data, new.person)
 ```
+
+> ## Section quiz
+>
+> This is the body of the challenge.
+>
+> ~~~
+> it may include some code
+> ~~~
+> {: .source}
+>
+> > ## Solution
+> >
+> > This is the body of the solution.
+> >
+> > ~~~
+> > it may also include some code
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
 
 
 ### Quiz
