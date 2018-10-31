@@ -73,3 +73,5 @@ options(scipen = 999)
 set.seed(2018)
 ~~~
 {: .language-r}
+
+The `library` command loads all of the functions in the specified library, in this case tidyverse, into our workspace.
