@@ -10,7 +10,7 @@ objectives:
 - Describe the purpose of the RStudio Script, Console, Environment, and Plots
 questions: What is R? How do we use RStudio to work with R?
 source: Rmd
-start: 900
+start: 0
 teaching: 30
 exercises: 0
 ---

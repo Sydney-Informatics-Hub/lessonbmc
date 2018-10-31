@@ -1,0 +1,17 @@
+---
+title: "Break"
+author: "Nicholas Ho, Richard Morris, Darya Vanichkina"
+keypoints:
+- Coffee is good
+objectives:
+- Rest
+questions: FIXME
+source: Rmd
+teaching: 15
+exercises: 0
+---
+
+```{r echo=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("01-")
+```

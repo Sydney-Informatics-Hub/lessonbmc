@@ -1,8 +1,16 @@
 ---
-title: "Brain & Mind Centre - Introduction into R Workshop"
+title: "Visualisation"
 subtitle: "Day 3"
 author: "Nicholas Ho, Richard Morris"
+start: 2
+keypoints:
+- FIXME
+objectives:
+- FIXME
+questions: FIXME
 source: Rmd
+teaching: 60
+exercises: 30
 ---
 
 ```{r echo=FALSE}

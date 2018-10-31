@@ -10,10 +10,10 @@ objectives:
 - Assign values to objects in R.
 - Solve simple arithmetic operations in R.
 - Describe what a data frame is.
-questions: What R data types do you think will be most useful in your own work?
+questions: Working with more realistic data
 source: Rmd
-teaching: 120
-exercises: 60
+teaching: 50
+exercises: 25
 ---
 
 ```{r echo=FALSE}
@@ -81,11 +81,11 @@ in base R:
 - `read.csv()`
 - `read.table()`
 
-In the package "xlsx":
+In the library "xlsx":
 
 - `read.xlsx()`
 
-In the package "haven":
+In the library "haven":
 
 - `read_spss()` for SPSS files
 
@@ -235,17 +235,56 @@ table(autism.data$ethnicity, useNA = "ifany")
 
 ###Quiz
 
-1. What is the proportions to males to females in this dataset?
-
-2. Return those participants whose `gender` is female
-
-3. Return those participants whose `gender` is female into a new data frame called "females.autism.data"
-
-4. What is the mean `result` score for those classified as ASD
-
-5. What is the mean `result` score for those not classified as ASD
 
 
+
+> ## Section quiz
+>
+> 1. What is the proportions to males to females in this dataset?
+>
+> 2. Return those participants whose `gender` is female
+>
+> 3. Return those participants whose `gender` is female into a new data frame called "females.autism.data"
+>
+> 4. What is the mean `result` score for those classified as ASD
+>
+> 5. What is the mean `result` score for those not classified as ASD
+>
+> {: .source}
+>
+> > ## Solution
+> >
+> > 1.  What is the proportions to males to females in this dataset?
+> > Manual answer:
+> > ~~~
+> > table(autism.data$gender)
+> > ~~~
+> > Get R to calculate for you:
+> > ~~~
+> > sum(autism.data$gender == "m")/nrow(autism.data)
+> > ~~~
+> > 2. Return those participants whose `gender` is female
+> >
+> > ~~~
+> > autism.data[autism.data$gender == "f", ]
+> > ~~~
+> > 3. Return those participants whose `gender` is female into a new data frame called "females.autism.data"
+> >
+> > ~~~
+> > females.autism.data <- autism.data[autism.data$gender == "f", ]
+> > ~~~
+> > 4.  What is the mean `result` score for those classified as ASD
+> > ~~~
+> > mean(autism.data[autism.data$Class.ASD == "YES" ,"result"])
+> > ~~~
+> > 5. What is the mean `result` score for those not classified as ASD
+> > Manual answer:
+> > ~~~
+> > mean(autism.data[autism.data$Class.ASD == "NO" ,"result"])
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
 
 
 
@@ -255,7 +294,7 @@ Use the write.table() function to make the data file a text file
 
 ```{r}
 write.table(x = bmc.data,
-            file = "bmcdata.txt",
+            file = "data/bmcdata.txt",
             row.names = FALSE,
             col.names = TRUE,
             sep = ",")
@@ -264,6 +303,6 @@ write.table(x = bmc.data,
 Use the write.csv() function to make the datafile a csv (comma separated values) file
 ```{r}
 write.csv(x = bmc.data,
-          file = "bmcdata.csv",
+          file = "data/bmcdata.csv",
           row.names = FALSE)
 ```

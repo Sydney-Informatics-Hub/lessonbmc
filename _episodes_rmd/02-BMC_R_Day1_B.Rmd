@@ -10,7 +10,7 @@ objectives:
 - Assign values to objects in R.
 - Solve simple arithmetic operations in R.
 - Describe what a data frame is.
-questions: What R data types do you think will be most useful in your own work?
+questions: R data types that will be useful in your own work
 source: Rmd
 teaching: 120
 exercises: 60

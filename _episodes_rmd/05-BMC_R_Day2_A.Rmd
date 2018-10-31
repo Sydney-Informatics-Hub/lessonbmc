@@ -1,0 +1,321 @@
+---
+title: "Controls and Loops"
+subtitle: "Day 2"
+author: "Nicholas Ho, Richard Morris"
+start: 1
+keypoints:
+- controls and loops FIXME
+objectives:
+- FIXME
+questions: FIXME
+source: Rmd
+teaching: 60
+exercises: 30
+---
+
+```{r echo=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("02-")
+```
+
+[Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
+
+
+## Controls & Loops
+
+These allow you to control the flow of execution of a script. Common ones include:
+
+* if, else
+* for
+* while
+* break
+* next
+* function
+
+### If statements
+```{r, eval=FALSE, message=FALSE}
+
+if (condition_is_satisfied)
+{
+    # do something
+}
+```
+
+Sometimes, we want to do something even if the `if` statement returns `FALSE`. In such a case, we use an `else` statement
+### If-else statements
+```{r, eval=FALSE, message=FALSE}
+
+if (condition_is_satisfied)
+{
+  # do something
+} else
+{
+  # do something else
+}
+```
+
+Hadley Wickham has published a [style guide for R](http://adv-r.had.co.nz/Style.html).
+
+*“An opening curly brace should never go on its own line and should always be followed by a new line. A closing curly brace should always go on its own line, unless it’s followed by else. Always indent the code inside curly braces.”*
+
+
+### If-else statement with clearer legibility
+```{r, eval=FALSE, message=FALSE}
+if (condition_is_satisfied) {
+  # do something
+} else {
+  # do something else
+}
+```
+
+
+For example:
+```{r}
+x <- 1
+if (x > 1) {
+  print("x is greater than 1")
+} else {
+  print("x is less than 1")
+}
+```
+
+
+### If, else if and else statements
+```{r, eval=FALSE}
+if (condition1_is_satisfied) {
+  # do something
+} else if (condition2_is_satisfied) {
+  # do something else
+} else {
+  # do something different
+}
+```
+
+For example:
+```{r}
+x <- 1
+if (x > 1) {
+  print("x is greater than 1")
+} else if ( x < 1) {
+  print ("x is less than 1")
+} else {
+  print("x is equal to 1")
+}
+```
+
+
+## Quiz
+
+Imagine a patient has just completed the SF-36 questionnaire and we have calcualted that this patient has a MHI5 score of 45.
+
+Write a set of if-else statements that will test the variable `mhi5_score`. Print out the characters “mental ill-health” if it is less than 52 and “good mental health” if it is greater than or equal to 52
+```{r}
+mhi5_score <- 45
+
+# put your if-else statements here
+
+
+
+```
+
+
+## For loops
+
+For loops works on an iterable variable and assigns successive values till the end of a sequence.
+
+```{r}
+for (i in 1:10) {
+    print(i)
+}
+
+```
+
+```{r}
+fruits <- c("apples", "oranges", "bananas", "strawberries")
+
+for (i in 1:4) {
+    print(fruits[i])
+}
+```
+
+```{r}
+for (fruit in fruits) {
+    print(fruit)
+}
+```
+
+We can shorthand this into one-line (coders love one-liners)
+```{r}
+for (fruit in fruits) print(fruit)
+```
+
+
+### For loop examples
+We’ve seen that we can use `for` loops for vectors. We can also use `for` loops for data frames. Let's read in our dataset from last week with the same modifications
+```{r}
+autism.data <- read.csv(file = "data/autism_data.csv",
+                        header = TRUE,
+                        sep = ",",
+                        na.strings = "?")
+
+# rename the column with the typo
+colnames(autism.data)[17] <- "country"
+
+# make a new column of patient IDs called pids
+new_ids <- paste( "PatientID_" , autism.data$id, sep = "")
+autism.data$pids <- new_ids
+
+# remove the patient who was 383 years old
+autism.data <- autism.data[-which.max(autism.data$age), ]
+
+# split into those with family history of autism
+family.autism.data <- autism.data[autism.data$autism == "yes", ]
+```
+
+We can traverse across each row of the data frame using a `for` loop and print out the `age`
+```{r, eval = FALSE}
+# for each row, print the participant's age
+numrows <- nrow(autism.data)
+for (i in 1:numrows) {
+  print(autism.data[i, "age"])
+}
+```
+
+Or traverse across each column of the data frame
+```{r}
+# for each column, print the column data type using the class function
+for (i in 1:ncol(autism.data)) {
+  columndata <- autism.data[ ,i]
+  print(class(columndata))
+}
+```
+
+### For-loops and if statements
+We can incorporate our knowledge of `if` statements with `for` loops.
+```{r}
+# for each row, if the participant is ASD, print out their test result
+numrows <- nrow(autism.data)
+for (i in 1:numrows) {
+  if (autism.data[i, "Class.ASD"] == "YES"){
+    print(autism.data[i, "result"])
+  }
+}
+```
+
+
+
+##Quiz
+
+1. Write code such that, for each row in the autism.data data frame, test whether the participant is ASD. If so, then print out "ASD" and if not, print out "Not ASD"
+```{r}
+# for each row, if the participant is ASD, print out their test result
+numrows <- nrow(autism.data)
+for (i in 1:numrows) {
+
+  # write your code here
+
+}
+```
+
+
+2. (Intermediate level) Write code such that, for each row in the autism.data data frame, test whether the participant is ASD and has a `result` score greater than or equal to 9. If so, then print out "High ASD" and if not, print out "Otherwise"
+```{r}
+# for each row, if the participant is ASD, print out their test result
+numrows <- nrow(autism.data)
+for (i in 1:numrows) {
+
+  # write your code here
+
+}
+```
+
+
+### While loop
+```{r}
+i <- 1
+while (i < 10) {
+    print(i)
+    i <- i + 1
+}
+```
+
+Be sure there is a way to exit out of a while loop. Otherwise, you can get stuck in an infinite loop. Below is an example of one.
+```{r, eval = FALSE}
+# don't run this
+i <- 1
+while (i < 10) {
+  print(i)
+}
+```
+
+
+### Break statement
+
+A break statement is used in a loop to stop the iterations and flow the control outside of the loop.
+```{r}
+x <- 1:10
+for (i in x){
+  if (i == 2){
+     break
+  }
+  print(i)
+}
+```
+
+### Next statement
+
+Next statement enables to skip the current iteration of a loop without terminating it.
+```{r}
+x <- 1:4
+for (i in x) {
+  if (i == 2){
+    next
+  }
+  print(i)
+}
+```
+
+## User-defined functions
+
+If you have to repeat the same few lines of code more than once, then you really need to write a function. Functions are a fundamental building block of R. You use them all the time in R and it's not that much harder to string functions together (or write entirely new ones from scratch) to do more.
+
+
+For example:
+```{r}
+# Make a function that performs addition
+add <- function(a, b) {
+    return(a + b)
+}
+
+add(2, 5)
+```
+
+
+### Example
+Create a function that accepts a data frame and returns the mean of the "age" column
+```{r}
+findMeanAge <- function(somedataframe) {
+  ages <- 0
+
+  for (i in 1:nrow(somedataframe)){
+    ages <- ages + somedataframe[i, "age"]
+  }
+
+  mean_age <- ages / nrow(somedataframe)
+
+  return(mean_age)
+}
+```
+
+
+Now we can use this function on any data set with an `age` column
+```{r}
+findMeanAge(family.autism.data)
+```
+
+If, however, there is already a function to perform what you need, save time and use that instead.
+```{r}
+findMeanAge(autism.data)
+
+mean(autism.data$age, na.rm = TRUE)
+```

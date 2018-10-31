@@ -1,0 +1,25 @@
+---
+title: "Visualisation"
+subtitle: "Day 3"
+author: "Nicholas Ho, Richard Morris"
+keypoints:
+- FIXME
+objectives:
+- FIXME
+questions: FIXME
+source: Rmd
+teaching: 60
+exercises: 30
+---
+
+```{r echo=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("03-")
+```
+
+[Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
+
+
+## Stats
+
+FIXME
