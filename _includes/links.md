@@ -1,5 +1,7 @@
 [cc-by-human]: https://creativecommons.org/licenses/by/4.0/
 [cc-by-legal]: https://creativecommons.org/licenses/by/4.0/legalcode
+[cc-nc-human]: https://creativecommons.org/licenses/by-nc/4.0/
+[cc-nc-legal]: https://creativecommons.org/licenses/by-nc/4.0/legalcode
 [ci]: http://communityin.org/
 [coc-reporting]: https://docs.carpentries.org/topic_folders/policies/code-of-conduct.html#reporting-guidelines
 [coc]: https://docs.carpentries.org/topic_folders/policies/code-of-conduct.html
