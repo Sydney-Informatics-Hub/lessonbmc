@@ -14,7 +14,6 @@ objectives:
 - Describe what a data frame is.
 questions: What R data types do you think will be most useful in your own work?
 source: Rmd
-start: 520
 teaching: 120
 exercises: 60
 ---
