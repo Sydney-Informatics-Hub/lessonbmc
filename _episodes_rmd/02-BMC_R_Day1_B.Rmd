@@ -13,7 +13,6 @@ objectives:
 questions: What R data types do you think will be most useful in your own work?
 source: Rmd
 start: 520
-subtitle: Day 1
 teaching: 120
 exercises: 60
 ---
@@ -153,7 +152,7 @@ disorders
 
 
 ### Factors
-Factors store categorical data. Under the hood, factors are actually integers that have a string label attached to each unique integer. For example, if we have a long list of Male/Female labels for each of our patients, this will be stored a "row" of zeros and ones by R. 
+Factors store categorical data. Under the hood, factors are actually integers that have a string label attached to each unique integer. For example, if we have a long list of Male/Female labels for each of our patients, this will be stored a "row" of zeros and ones by R.
 ```{r}
 disorders <- as.factor(disorders)
 class(disorders)
