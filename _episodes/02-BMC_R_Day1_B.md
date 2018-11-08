@@ -5,7 +5,8 @@ title: "R variables and data types"
 author: "Nicholas Ho, Richard Morris, Darya Vanichkina"
 keypoints:
 - R supports multiple variable types
-- Errors often result because of trying to perform an unsupported operation on a specific data type
+- Errors often result because of trying to perform an unsupported operation on a specific
+  data type
 - Errors can be cryptic to interpret
 - We can use helper packages to import and filter data in R
 objectives:
@@ -20,7 +21,7 @@ exercises: 60
 
 
 
-[Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
+[Back to homepage](https://sydney-informatics-hub.github.io/lessonbmc/)
 
 
 
@@ -35,6 +36,8 @@ numeric | Decimals | 0.1, -0.09, 234.567
 character | Text | "A", "hello", "welcome"
 logical | Booleans | TRUE or FALSE
 factor | Categorical | "green", "blue", "red", "purple"
+missing | Logical | NA
+empty | - | NULL
 
 **Data type** | **Type**
 ---------------|------------------------------------------------
@@ -59,7 +62,7 @@ getwd()
 
 
 ~~~
-[1] "/Users/darya/OneDrive - The University of Sydney (Staff)/Training/18_11_BMCNickHo/2018_bmctest/_episodes_rmd"
+[1] "/Users/nicholasho/Projects/workshops/sih_bmc_r_workshop_2018/lessonbmc/_episodes_rmd"
 ~~~
 {: .output}
 
@@ -423,7 +426,7 @@ class(disorders)
 ~~~
 {: .output}
 
-How many categories are there for ethnicity and what are they?
+How many categories are there for disorders and what are they?
 
 ~~~
 levels(disorders)
@@ -451,7 +454,7 @@ nlevels(disorders)
 ~~~
 {: .output}
 
-A factor can be ordered. This makes sense in the context of a ranking such as a survey response, e.g. Strongly agree to Strong disagree.
+A factor can be ordered. This makes sense in the context of a ranking such as a survey response, e.g. from 'Strongly agree' to 'Strong disagree'.
 
 ~~~
 responses <- c("low", "high", "medium", "low", "low", "high", "high", "medium", "medium")
@@ -751,20 +754,6 @@ bmc.data[, "age"]
 ~~~
 {: .output}
 
-
-
-~~~
-bmc.data[, c(F, F, F, T, F, F, F)]
-~~~
-{: .language-r}
-
-
-
-~~~
-[1] 20 45 15 12
-~~~
-{: .output}
-
 Return only the first 3 rows and columns 2 and 5 of the data set
 
 ~~~
@@ -850,7 +839,7 @@ bmc.data[females, ]
 ~~~
 {: .output}
 
-Another way to subset the patients is with the `which()` function
+Another way to subset the patients is with the `which()` function. This returns the TRUE indices of a logical object.
 
 ~~~
 females <- which(bmc.data$gender == "Female")
@@ -915,7 +904,7 @@ bmc.data[bmc.data$age > 16, ]
 {: .output}
 
 ### Adding records
-Add a new row to the data set using the rbind() function:
+Add a new row to the data set using the `rbind()` function:
 
 
 ~~~

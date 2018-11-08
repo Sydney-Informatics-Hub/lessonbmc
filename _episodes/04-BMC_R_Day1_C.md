@@ -5,7 +5,8 @@ title: "R variables and data types"
 author: "Nicholas Ho, Richard Morris, Darya Vanichkina"
 keypoints:
 - R supports multiple variable types
-- Errors often result because of trying to perform an unsupported operation on a specific data type
+- Errors often result because of trying to perform an unsupported operation on a specific
+  data type
 - Errors can be cryptic to interpret
 - We can use helper packages to import and filter data in R
 objectives:
@@ -319,9 +320,9 @@ which.max(autism.data$age)
 ~~~
 {: .output}
 
-Someone is apparently 383 years old! There are a number of possibilities why this value is here with a range of probabilities from the most likely (the participant made a typo) to the least (the participant is yoda).
+Someone is apparently 383 years old! There are a number of possibilities why this value is here with a range of probabilities from the most likely (data entry error) to the least (the participant is yoda).
 
-For our purposes, let's remove this person. To do so, we'll use the `-` sign in front of the indices we want.
+For our purposes, let's remove this person. To do so, we'll use the `-` sign in front of the indices we want to remove.
 
 ~~~
 autism.data <- autism.data[-which.max(autism.data$age), ]
@@ -664,10 +665,10 @@ summary(autism.data$ethnicity)
 ~~~
           Asian           Black        Hispanic          Latino 
             123              43              13              20 
-Middle Eastern           others          Others        Pasifika 
-             92               1              30              11 
-    South Asian         Turkish  White-European            NA's 
-             36               6             233              95 
+Middle Eastern           Others        Pasifika     South Asian 
+             92              30              11              36 
+        Turkish  White-European          others            NA's 
+              6             233               1              95 
 ~~~
 {: .output}
 
@@ -684,10 +685,10 @@ table(autism.data$ethnicity)
 
           Asian           Black        Hispanic          Latino 
             123              43              13              20 
-Middle Eastern           others          Others        Pasifika 
-             92               1              30              11 
-    South Asian         Turkish  White-European 
-             36               6             233 
+Middle Eastern           Others        Pasifika     South Asian 
+             92              30              11              36 
+        Turkish  White-European          others 
+              6             233               1 
 ~~~
 {: .output}
 
@@ -704,10 +705,10 @@ table(autism.data$ethnicity, useNA = "ifany")
 
           Asian           Black        Hispanic          Latino 
             123              43              13              20 
-Middle Eastern           others          Others        Pasifika 
-             92               1              30              11 
-    South Asian         Turkish  White-European            <NA> 
-             36               6             233              95 
+Middle Eastern           Others        Pasifika     South Asian 
+             92              30              11              36 
+        Turkish  White-European          others            <NA> 
+              6             233               1              95 
 ~~~
 {: .output}
 
@@ -719,7 +720,7 @@ Middle Eastern           others          Others        Pasifika
 
 > ## Section quiz
 >
-> 1. What is the proportions to males to females in this dataset?
+> 1. What is the proportion of males to females in this dataset?
 >
 > 2. Return those participants whose `gender` is female
 >
@@ -733,31 +734,29 @@ Middle Eastern           others          Others        Pasifika
 >
 > > ## Solution
 > >
-> > 1.  What is the proportions to males to females in this dataset?
-> > Manual answer:
+> > 1.  What is the proportion of males to females in this dataset?
+> >
 > > ~~~
 > > table(autism.data$gender)
+> > prop.table(table(autism.data$gender))
 > > ~~~
-> > Get R to calculate for you:
-> > ~~~
-> > sum(autism.data$gender == "m")/nrow(autism.data)
-> > ~~~
-> > 2. Return those participants whose `gender` is female
+> > 2. Return those participants whose 'gender' is female
 > >
 > > ~~~
 > > autism.data[autism.data$gender == "f", ]
 > > ~~~
-> > 3. Return those participants whose `gender` is female into a new data frame called "females.autism.data"
+> > 3. Return those participants whose 'gender' is female into a new data frame called "females.autism.data"
 > >
 > > ~~~
 > > females.autism.data <- autism.data[autism.data$gender == "f", ]
 > > ~~~
-> > 4.  What is the mean `result` score for those classified as ASD
+> > 4.  What is the mean 'result' score for those classified as ASD
+> >
 > > ~~~
 > > mean(autism.data[autism.data$Class.ASD == "YES" ,"result"])
 > > ~~~
-> > 5. What is the mean `result` score for those not classified as ASD
-> > Manual answer:
+> > 5. What is the mean 'result' score for those not classified as ASD
+> > 
 > > ~~~
 > > mean(autism.data[autism.data$Class.ASD == "NO" ,"result"])
 > > ~~~
@@ -769,37 +768,21 @@ Middle Eastern           others          Others        Pasifika
 
 
 ## Writing the data out
-Use the write.table() function to make the data file a text file
+Use the write.table() function to write the data into a text file
 
 
 ~~~
-write.table(x = bmc.data,
-            file = "data/bmcdata.txt",
-            row.names = FALSE,
-            col.names = TRUE,
-            sep = ",")
+write.table(x = autism.data,
+            file = "data/autism_pids.txt",
+            row.names = FALSE)
 ~~~
 {: .language-r}
-
-
-
-~~~
-Error in is.data.frame(x): object 'bmc.data' not found
-~~~
-{: .error}
 
 Use the write.csv() function to make the datafile a csv (comma separated values) file
 
 ~~~
-write.csv(x = bmc.data,
-          file = "data/bmcdata.csv",
+write.csv(x = autism.data,
+          file = "data/autism_pids.csv",
           row.names = FALSE)
 ~~~
 {: .language-r}
-
-
-
-~~~
-Error in is.data.frame(x): object 'bmc.data' not found
-~~~
-{: .error}
