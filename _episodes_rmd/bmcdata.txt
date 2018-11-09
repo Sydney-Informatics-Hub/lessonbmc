@@ -1,5 +1,0 @@
-"fname","gender","disorder","age","biomarker1","clinicalstage"
-"Alice","Female","autism",20,5.7,"1b"
-"Bob","Male","anxiety",45,4.96,"1a"
-"Carol","Female","autism",15,1.37,"1a"
-"David","Male","depression",12,10.44,"2"
