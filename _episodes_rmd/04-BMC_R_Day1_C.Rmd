@@ -246,7 +246,7 @@ table(autism.data$ethnicity, useNA = "ifany")
 ```
 
 
-###Quiz
+### Quiz
 
 
 
@@ -315,3 +315,26 @@ write.csv(x = autism.data,
           file = "data/autism_pids.csv",
           row.names = FALSE)
 ```
+
+### [Optional] Homework
+
+> ## [Optional] Homework
+> Use the autism.data for this excercise
+> 
+> 1. Amongst people who had used the app before, were more from Armenia or Brazil?
+>
+> 2. How many people annotated as parents were also autistic?
+>
+> 3. What is the mean age of males and females in the dataset? (Hint: you may need to use na.rm = TRUE as an arguement for the mean function)
+>
+> 4. [Extra credit] Using the `chisq.test` function, try to see whether there is a significant relationship between ASD and having jaundice as a child. What about gender and autism?
+>
+> {: .source}
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+
+
+
+
