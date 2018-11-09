@@ -1,5 +1,5 @@
 ---
-title: "Visualisation"
+title: "Statistics"
 subtitle: "Day 3"
 author: "Nicholas Ho, Richard Morris"
 keypoints:

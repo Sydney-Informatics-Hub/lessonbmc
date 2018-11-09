@@ -1,5 +1,5 @@
 ---
-title: "R variables and data types"
+title: "Data Structures"
 author: "Nicholas Ho, Richard Morris, Darya Vanichkina"
 keypoints:
 - R supports multiple variable types
@@ -80,13 +80,20 @@ in base R:
 - `read.csv()`
 - `read.table()`
 
-In the library "xlsx":
+In the `xlsx` library:
 
 - `read.xlsx()`
 
-In the library "haven":
+In the `haven` library:
 
 - `read_spss()` for SPSS files
+
+In the `tidyverse` family of libraries (more specifically, part of the `readr` library):
+- `read_csv()`
+- `read_tsv()`
+- `read_delim()`
+- `read_fwf()`
+- `read_table()`
 
 
 ### Viewing The Data
@@ -95,6 +102,12 @@ Remember, we use the function `View()` to visually inspect at the data
 View(autism.data)
 ```
 
+If the dataset is large, it is usually more prudent to view only the first few rows, using the head command:
+
+
+```{r}
+head(autism.data)
+```
 
 What data type is this data?
 ```{r}
@@ -137,11 +150,12 @@ This leaves an unwanted gap, hence we'll use the `sep` parameter
 paste("hel", "lo", sep = "")
 ```
 
-Now let's add the letter "P" to the front of the IDS. Then, we'll add this as a new column
-```{r}
-new_ids <- paste( "PatientID_" , autism.data$id, sep = "")
+A shorthand for this command is called paste0, but we're showing the `paste()` command here, since you may want to use other delimeters, such as "@", for example, in your own work.
 
-autism.data$pids <- new_ids
+Now let's add the letters "PatientID_" to the front of the IDS. Then, we'll add this as a new column
+
+```{r}
+autism.data$pids <- paste( "PatientID_" , autism.data$id, sep = "")
 ```
 
 Afterwards, view the data again to check the new "pids" column.
