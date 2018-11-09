@@ -21,10 +21,6 @@ exercises: 60
 
 
 
-[Back to homepage](https://sydney-informatics-hub.github.io/lessonbmc/)
-
-
-
 ### R variables and data types
 
 First, we introduce the common variable types and data types that you'll be working with in R. Commonly, errors involve using the wrong variable or data type

@@ -19,8 +19,6 @@ exercises: 0
 
 
 
-[Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
-
 ## About R
 
 ### The R Programming Language

@@ -22,8 +22,6 @@ source("../bin/chunk-options.R")
 knitr_fig_path("01-")
 ```
 
-[Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
-
 ## Working with more realistic Data
 
 The dataset that we will be using today is taken from University of California, Irvine's Machine Learning Repository. We will be examining the [Autism Screening Adult Data Set](https://archive.ics.uci.edu/ml/datasets/Autism+Screening+Adult). This is data collected by Dr Fadi Fayez Thabtah at NMIT via the mobile app ASD Tests.
