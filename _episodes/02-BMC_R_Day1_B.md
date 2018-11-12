@@ -304,6 +304,8 @@ favourite.numeric == 9.9
 {: .output}
 
 
+
+
 ### Vectors
 We can create 1D data structures called "vectors".
 
@@ -405,6 +407,53 @@ disorders
 ~~~
 [1] "autism"     "ocd"        "depression" "ocd"        "anxiety"   
 [6] "autism"    
+~~~
+{: .output}
+
+### Automatic type conversions
+R tries to be helpful by converting data to the same type within a vector when adding elements to a vector. This can result in unexpected problems...
+
+
+~~~
+mybool <- c(rep(TRUE, 5), rep(FALSE, 5))
+class(mybool)
+~~~
+{: .language-r}
+
+
+
+~~~
+[1] "logical"
+~~~
+{: .output}
+
+
+
+~~~
+mybool <- c(mybool, 10)
+class(mybool)
+~~~
+{: .language-r}
+
+
+
+~~~
+[1] "numeric"
+~~~
+{: .output}
+
+
+
+~~~
+mybool <- c(mybool, "10")
+class(mybool)
+~~~
+{: .language-r}
+
+
+
+~~~
+[1] "character"
 ~~~
 {: .output}
 
