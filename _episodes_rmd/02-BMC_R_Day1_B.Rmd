@@ -46,7 +46,7 @@ matrix | 2D collection of variables of the same type
 data.frame | 2D collection of variables of multiple types
 
 
-![R variable and data types](Rvariablesdata.jpg)
+![R variable and data types](../fig/Rvariablesdata.jpg)
 
 ## Getting Started
 

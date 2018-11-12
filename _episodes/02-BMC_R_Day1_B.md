@@ -45,7 +45,7 @@ matrix | 2D collection of variables of the same type
 data.frame | 2D collection of variables of multiple types
 
 
-![R variable and data types](Rvariablesdata.jpg)
+![R variable and data types](../fig/Rvariablesdata.jpg)
 
 ## Getting Started
 
@@ -61,7 +61,7 @@ getwd()
 
 
 ~~~
-[1] "/Users/darya/OneDrive - The University of Sydney (Staff)/Training/18_11_BMCNickHo/lessonbmc/_episodes_rmd"
+[1] "/Users/nicholasho/Projects/workshops/sih_bmc_r_workshop_2018/lessonbmc/_episodes_rmd"
 ~~~
 {: .output}
 
