@@ -9,7 +9,7 @@ keypoints:
 objectives:
 - Introduce if and if-else statements
 - Introduce loops
-questions: FIXME
+questions: Popular controls and loops
 source: Rmd
 start: 1
 subtitle: Day 2
@@ -81,10 +81,11 @@ if (condition_is_satisfied) {
 {: .language-r}
 
 
-For example:
+For example, imagine we had a patient complete the SF-36 questionnaire. We have calculated that the patient has a Mental Health Inventory (5-item) score of 45.
 
 ~~~
 mhi5 <- 45
+
 if (mhi5 >= 60) {
   print("Patient has good mental health")
 } else {
@@ -118,6 +119,7 @@ For example:
 
 ~~~
 mhi5 <- 45
+
 if (mhi5 >= 60) {
   print("Patient has great mental health")
 } else if (mhi5 <= 20) {
@@ -136,25 +138,37 @@ if (mhi5 >= 60) {
 {: .output}
 
 
-## Quiz
-
-Imagine a patient has just completed the SF-36 questionnaire and we have calcualted that this patient has a MHI5 score of 45.
-
-Write a set of if-else statements that will test the variable `mhi5`. Print out the characters “Patient has poor mental health” if it is less than 52 and “Patient has good mental health” if it is greater than or equal to 52
-
-~~~
-mhi5 <- 45
-
-# put your if-else statements here
-~~~
-{: .language-r}
+> ## Section quiz
+>
+> 1. Imagine a patient has just completed the SF-36 questionnaire and we have calculated that this patient has a MHI5 score of 45. Write a set of if-else statements that will test the variable 'mhi5'. Print out the characters “Patient has poor mental health” if it is less than 52 and “Patient has good mental health” if it is greater than or equal to 52
+>
+> {: .source}
+>
+> > ## Solution
+> >
+> > 1. If-else statements 
+> >
+> > ~~~
+> > mhi5 <- 45
+> >
+> > if (mhi5 < 52) {
+> >   print("Patient has poor mental health")
+> > } else {
+> >   print("Patient has good mental health")
+> > }
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
 
 
 ## For loops
 
 For loops works on an iterable variable and assigns successive values till the end of a sequence.
 
-My favourite analogy is imagine you check your email in the morning and you have 10 new items. You iteratively go through each one and perform some task on it e.g. reply, flag, report junk
+This is useful if you have to perform a task over and over again.
+
+My favourite analogy is imagine you check your email in the morning and you have 100 new items. You iteratively go through each one and perform some task on it e.g. reply, flag, report junk
 
 
 ~~~
@@ -164,10 +178,11 @@ for (item in list_of_items) {
 ~~~
 {: .language-r}
 
-In a simple example, let's just print out each item
+In a simple example of a for-loop, let's just print out each item
 
 ~~~
-for (i in 1:10) {
+myitems <- 1:10
+for (i in myitems) {
   print(i)
 }
 ~~~
@@ -287,7 +302,7 @@ for (i in 1:numrows) {
   autism <- autism.data[i , "Class.ASD"]
   
   if (autism == "YES") {
-    output <- paste(patientid, "has ASD", sep =" ")
+    output <- paste(patientid, "diagnosed with ASD", sep =" ")
     print(output)
   }
 }
@@ -295,235 +310,25 @@ for (i in 1:numrows) {
 {: .language-r}
 
 
-
-~~~
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-[1] " has ASD"
-~~~
-{: .output}
-
-
-
-##Quiz
-
-1. For each row in the `autism.data` data frame, test whether the participant has "YES" in the `Class.ASD` column. If so, then print out "Patient has ASD" and if not, print out "Patient does not have ASD"
-
-~~~
-# for each row, if the participant is ASD, print out
-numrows <- nrow(autism.data)
-for (i in 1:numrows) {
-
-  # write your code here
-
-}
-~~~
-{: .language-r}
-
-
-
 > ## Section quiz
 >
-> 1. For each row in the autism.data data frame, test whether the participant has "YES" in the Class.ASD column. If so, then print out "Patient has ASD" and if not, print out "Patient does not have ASD"
+> 1. For each row in the autism.data data frame, test whether the participant has "YES" in the Class.ASD column. If so, then print out "Patient diagnosed with ASD" and if not, print out "No ASD"
 >
 > {: .source}
 >
 > > ## Solution
 > >
-> > 1. Return those patients whose clinical stage is "1a"
+> > 1. For each row in the autism.data data frame, test whether the participant has "YES" in the Class.ASD column. If so, then print out "Patient has ASD" and if not, print out "Patient does not have ASD"
 > >
 > > ~~~
 > > numrows <- nrow(autism.data)
 > > for (i in 1:numrows) {
 > > 
-> >   # write your code here
-> > 
+> >   if (autism.data[i, "Class.ASD"] == "YES") {
+> >     print("Patient diagnosed with ASD") 
+> >   } else {
+> >     print("Patient does not have ASD")
+> >   }
 > > }
 > > ~~~
 > > {: .output}
