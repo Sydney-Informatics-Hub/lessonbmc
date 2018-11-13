@@ -106,7 +106,7 @@ if (mhi5 >= 60) {
 
 > ## Section quiz
 >
-> 1. Imagine a patient has just completed the SF-36 questionnaire and we have calculated that this patient has a MHI5 score of 45. Write a set of if-else statements that will test the variable 'mhi5'. Print out the characters “Patient has poor mental health” if it is less than 52 and “Patient has good mental health” if it is greater than or equal to 52
+> 1. Imagine a patient has just completed the SF-36 questionnaire and we have calculated that this patient has a MHI5 score of 45. Write a set of if-else statements that will test the variable 'mhi5'. Print out the characters “Patient has poor mental health” if it is less than 52 and “Patient has good mental health” otherwise.
 >
 > {: .source}
 >
@@ -234,7 +234,7 @@ for (i in 1:numrows) {
 >
 > > ## Solution
 > >
-> > 1. For each row in the autism.data data frame, test whether the participant has "YES" in the Class.ASD column. If so, then print out "Patient has ASD" and if not, print out "Patient does not have ASD"
+> > 1. We will use a for-loop and a set of if-else statements within the loop.
 > >
 > > ~~~
 > > numrows <- nrow(autism.data)
@@ -243,7 +243,7 @@ for (i in 1:numrows) {
 > >   if (autism.data[i, "Class.ASD"] == "YES") {
 > >     print("Patient diagnosed with ASD") 
 > >   } else {
-> >     print("Patient does not have ASD")
+> >     print("No ASD")
 > >   }
 > > }
 > > ~~~
