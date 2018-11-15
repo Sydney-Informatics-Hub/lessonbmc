@@ -4,6 +4,7 @@
 title: "Controls and Loops"
 author: "Nicholas Ho, Richard Morris, Darya Vanichkina, Maryam Montazerolghaem"
 keypoints:
+- R markdown notebooks can be very powerful for keeping your code and output in one place
 - Use if and if-else statements to control the execution of your code
 - If you have to do something multiple times, you might consider using a loop
 objectives:
@@ -17,6 +18,14 @@ teaching: 60
 exercises: 30
 ---
 
+
+
+## Rmarkdown
+Today, we are going to use another nifty feature of RStudio which makes working with R in a reproducible and effient manner a lot easier and more effective. Instead of saving our work as an Rscript, we will save it as an Rnotebook file, which will capture all of the code, output AND figures into one R document. 
+
+To do this go to File -> New Rnotebook and save that file. 
+
+R Markdown is a file format for making dynamic documents with R. An R Markdown document is written in markdown (an easy-to-write plain text format) and contains chunks of embedded R code, like the document below.
 
 
 
@@ -332,3 +341,5 @@ for (i in 1:numrows) {
 > > {: .output}
 > {: .solution}
 {: .challenge}
+
+

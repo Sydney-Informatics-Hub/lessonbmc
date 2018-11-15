@@ -40,26 +40,26 @@ library(tidyverse)
 
 
 ~~~
--- Attaching packages ---------------------------------- tidyverse 1.2.1 --
+── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──
 ~~~
 {: .output}
 
 
 
 ~~~
-<U+221A> ggplot2 3.0.0     <U+221A> purrr   0.2.5
-<U+221A> tibble  1.4.2     <U+221A> dplyr   0.7.6
-<U+221A> tidyr   0.8.1     <U+221A> stringr 1.2.0
-<U+221A> readr   1.1.1     <U+221A> forcats 0.3.0
+✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.7
+✔ tidyr   0.8.2     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0
 ~~~
 {: .output}
 
 
 
 ~~~
--- Conflicts ------------------------------------- tidyverse_conflicts() --
-x dplyr::filter() masks stats::filter()
-x dplyr::lag()    masks stats::lag()
+── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
 ~~~
 {: .output}
 
@@ -68,7 +68,7 @@ x dplyr::lag()    masks stats::lag()
 
 ![haven](../fig/haven_logo.png)
 
-haven is a package within the tidyverse that allows you to read in data from different sources. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
+haven is a package within the tidyverse that allows you to read in data from SAS, SPSS and STATA. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
 
 
 
@@ -76,9 +76,7 @@ haven is a package within the tidyverse that allows you to read in data from dif
 # load haven
 library(haven)
 
-autism.data <- read.csv(file = "data/autism_pids.csv",
-                        header = TRUE,
-                        sep = ",")
+#autism.data <- read_sav(file = "data/autism_data.sav")
 ~~~
 {: .language-r}
 
@@ -101,8 +99,8 @@ The `select()` function allows you to pick or remove variables based on their na
 
 
 ~~~
-# select just the age, gender and result columns from autism.data
-selected.autism.data <- select(autism.data, age, gender, result)
+# select just the age, gender and result columns from autism.data (and rename country on the fly)
+selected.autism.data <- select(autism.data, age, gender, result, country = country)
 head(selected.autism.data)
 ~~~
 {: .language-r}
@@ -110,13 +108,15 @@ head(selected.autism.data)
 
 
 ~~~
-  age gender result
-1  26      f      6
-2  24      m      5
-3  27      m      8
-4  35      f      6
-5  40      f      2
-6  36      m      9
+# A tibble: 6 x 4
+    age gender result country      
+  <int> <chr>   <int> <chr>        
+1    26 f           6 United States
+2    24 m           5 Brazil       
+3    27 m           8 Spain        
+4    35 f           6 United States
+5    40 f           2 Egypt        
+6    36 m           9 United States
 ~~~
 {: .output}
 
@@ -132,27 +132,19 @@ head(selected.autism.data)
 
 
 ~~~
-  id A1_Score A2_Score A3_Score A4_Score A5_Score A6_Score A7_Score
-1  1        1        1        1        1        0        0        1
-2  2        1        1        0        1        0        0        0
-3  3        1        1        0        1        1        0        1
-4  4        1        1        0        1        0        0        1
-5  5        1        0        0        0        0        0        0
-6  6        1        1        1        1        1        0        1
-  A8_Score A9_Score A10_Score age gender jaundice autism used_app_before
-1        1        0         0  26      f       no     no              no
-2        1        0         1  24      m       no    yes              no
-3        1        1         1  27      m      yes    yes              no
-4        1        0         1  35      f       no    yes              no
-5        1        0         0  40      f       no     no              no
-6        1        1         1  36      m      yes     no              no
-  result    age_desc relation Class.ASD        pids
-1      6 18 and more     Self        NO PatientID_1
-2      5 18 and more     Self        NO PatientID_2
-3      8 18 and more   Parent       YES PatientID_3
-4      6 18 and more     Self        NO PatientID_4
-5      2 18 and more     <NA>        NO PatientID_5
-6      9 18 and more     Self       YES PatientID_6
+# A tibble: 6 x 21
+     id A1_Score A2_Score A3_Score A4_Score A5_Score A6_Score A7_Score
+  <int>    <int>    <int>    <int>    <int>    <int>    <int>    <int>
+1     1        1        1        1        1        0        0        1
+2     2        1        1        0        1        0        0        0
+3     3        1        1        0        1        1        0        1
+4     4        1        1        0        1        0        0        1
+5     5        1        0        0        0        0        0        0
+6     6        1        1        1        1        1        0        1
+# ... with 13 more variables: A8_Score <int>, A9_Score <int>,
+#   A10_Score <int>, age <int>, gender <chr>, jaundice <chr>,
+#   autism <chr>, used_app_before <chr>, result <int>, age_desc <chr>,
+#   relation <chr>, Class.ASD <chr>, pids <chr>
 ~~~
 {: .output}
 
@@ -169,13 +161,15 @@ autism.data %>% select(age, gender, result) %>% head()
 
 
 ~~~
-  age gender result
-1  26      f      6
-2  24      m      5
-3  27      m      8
-4  35      f      6
-5  40      f      2
-6  36      m      9
+# A tibble: 6 x 3
+    age gender result
+  <int> <chr>   <int>
+1    26 f           6
+2    24 m           5
+3    27 m           8
+4    35 f           6
+5    40 f           2
+6    36 m           9
 ~~~
 {: .output}
 
@@ -191,13 +185,15 @@ autism.data %>%
 
 
 ~~~
-  age gender result
-1  26      f      6
-2  24      m      5
-3  27      m      8
-4  35      f      6
-5  40      f      2
-6  36      m      9
+# A tibble: 6 x 3
+    age gender result
+  <int> <chr>   <int>
+1    26 f           6
+2    24 m           5
+3    27 m           8
+4    35 f           6
+5    40 f           2
+6    36 m           9
 ~~~
 {: .output}
 
@@ -214,6 +210,7 @@ autism.data %>%
 The `filter()` function allows you to filter rows of your dataset that match some condition. We can also combine this with some of R' base functions. Here, we'll use `head()` to restrict the output number of rows
 
 ~~~
+# get the first 6 people who are over 17
 autism.data %>%
   filter(age == 17) %>%
   head()
@@ -223,34 +220,20 @@ autism.data %>%
 
 
 ~~~
-  id A1_Score A2_Score A3_Score A4_Score A5_Score A6_Score A7_Score
-1  7        0        1        0        0        0        0        0
-2 10        1        1        1        1        0        1        1
-3 13        0        1        1        1        1        1        0
-4 14        1        0        0        0        0        0        1
-5 15        1        0        0        0        0        0        1
-6 85        1        1        0        0        0        0        0
-  A8_Score A9_Score A10_Score age gender      ethnicity jaundice autism
-1        1        0         0  17      f          Black       no     no
-2        1        1         0  17      m          Asian      yes    yes
-3        0        1         0  17      f           <NA>       no     no
-4        1        0         1  17      m           <NA>       no     no
-5        1        0         1  17      f           <NA>       no     no
-6        0        0         0  17      f White-European       no     no
-        country used_app_before result    age_desc
-1 United States              no      2 18 and more
-2       Bahamas              no      8 18 and more
-3       Bahamas              no      6 18 and more
-4       Austria              no      4 18 and more
-5     Argentina              no      4 18 and more
-6   New Zealand              no      2 18 and more
-                  relation Class.ASD         pids
-1                     Self        NO  PatientID_7
-2 Health care professional       YES PatientID_10
-3                     <NA>        NO PatientID_13
-4                     <NA>        NO PatientID_14
-5                     <NA>        NO PatientID_15
-6                     Self        NO PatientID_85
+# A tibble: 6 x 23
+     id A1_Score A2_Score A3_Score A4_Score A5_Score A6_Score A7_Score
+  <int>    <int>    <int>    <int>    <int>    <int>    <int>    <int>
+1     7        0        1        0        0        0        0        0
+2    10        1        1        1        1        0        1        1
+3    13        0        1        1        1        1        1        0
+4    14        1        0        0        0        0        0        1
+5    15        1        0        0        0        0        0        1
+6    85        1        1        0        0        0        0        0
+# ... with 15 more variables: A8_Score <int>, A9_Score <int>,
+#   A10_Score <int>, age <int>, gender <chr>, ethnicity <chr>,
+#   jaundice <chr>, autism <chr>, country <chr>, used_app_before <chr>,
+#   result <int>, age_desc <chr>, relation <chr>, Class.ASD <chr>,
+#   pids <chr>
 ~~~
 {: .output}
 
@@ -267,13 +250,15 @@ autism.data %>%
 
 
 ~~~
-  age gender       country
-1  17      f United States
-2  17      m       Bahamas
-3  17      f       Bahamas
-4  17      m       Austria
-5  17      f     Argentina
-6  17      f   New Zealand
+# A tibble: 6 x 3
+    age gender country      
+  <int> <chr>  <chr>        
+1    17 f      United States
+2    17 m      Bahamas      
+3    17 f      Bahamas      
+4    17 m      Austria      
+5    17 f      Argentina    
+6    17 f      New Zealand  
 ~~~
 {: .output}
 
@@ -291,52 +276,14 @@ autism.data %>%
 
 ~~~
 .
-         Afghanistan        AmericanSamoa               Angola 
-                   0                    0                    0 
-           Argentina              Armenia                Aruba 
-                   1                    0                    0 
-           Australia              Austria           Azerbaijan 
-                   0                    1                    0 
-             Bahamas           Bangladesh              Belgium 
-                   2                    0                    0 
-             Bolivia               Brazil              Burundi 
-                   0                    0                    0 
-              Canada                Chile                China 
-                   1                    0                    0 
-          Costa Rica               Cyprus       Czech Republic 
-                   0                    0                    0 
-             Ecuador                Egypt             Ethiopia 
-                   0                    0                    0 
-             Finland               France              Germany 
-                   0                    0                    0 
-           Hong Kong              Iceland                India 
-                   0                    0                    1 
-           Indonesia                 Iran                 Iraq 
-                   0                    0                    0 
-             Ireland                Italy                Japan 
-                   0                    0                    0 
-              Jordan           Kazakhstan              Lebanon 
-                   0                    0                    0 
-            Malaysia               Mexico                Nepal 
-                   0                    0                    0 
-         Netherlands          New Zealand            Nicaragua 
-                   1                    4                    0 
-               Niger                 Oman             Pakistan 
-                   0                    0                    0 
-         Philippines             Portugal              Romania 
-                   0                    0                    1 
-              Russia         Saudi Arabia               Serbia 
-                   0                    0                    0 
-        Sierra Leone         South Africa                Spain 
-                   0                    0                    0 
-           Sri Lanka               Sweden                Tonga 
-                   0                    0                    0 
-              Turkey              Ukraine United Arab Emirates 
-                   0                    0                    1 
-      United Kingdom        United States              Uruguay 
-                   1                    4                    0 
-            Viet Nam 
-                   0 
+           Argentina              Austria              Bahamas 
+                   1                    1                    2 
+              Canada                India          Netherlands 
+                   1                    1                    1 
+         New Zealand              Romania United Arab Emirates 
+                   4                    1                    1 
+      United Kingdom        United States 
+                   1                    4 
 ~~~
 {: .output}
 
@@ -346,6 +293,7 @@ The `arrange()` function allows you to reorder the rows of your dataset
 ~~~
 autism.data %>%
   arrange(age) %>%
+  select(pids,age,  gender, Class.ASD) %>%
   head()
 ~~~
 {: .language-r}
@@ -353,34 +301,41 @@ autism.data %>%
 
 
 ~~~
-  id A1_Score A2_Score A3_Score A4_Score A5_Score A6_Score A7_Score
-1  7        0        1        0        0        0        0        0
-2 10        1        1        1        1        0        1        1
-3 13        0        1        1        1        1        1        0
-4 14        1        0        0        0        0        0        1
-5 15        1        0        0        0        0        0        1
-6 85        1        1        0        0        0        0        0
-  A8_Score A9_Score A10_Score age gender      ethnicity jaundice autism
-1        1        0         0  17      f          Black       no     no
-2        1        1         0  17      m          Asian      yes    yes
-3        0        1         0  17      f           <NA>       no     no
-4        1        0         1  17      m           <NA>       no     no
-5        1        0         1  17      f           <NA>       no     no
-6        0        0         0  17      f White-European       no     no
-        country used_app_before result    age_desc
-1 United States              no      2 18 and more
-2       Bahamas              no      8 18 and more
-3       Bahamas              no      6 18 and more
-4       Austria              no      4 18 and more
-5     Argentina              no      4 18 and more
-6   New Zealand              no      2 18 and more
-                  relation Class.ASD         pids
-1                     Self        NO  PatientID_7
-2 Health care professional       YES PatientID_10
-3                     <NA>        NO PatientID_13
-4                     <NA>        NO PatientID_14
-5                     <NA>        NO PatientID_15
-6                     Self        NO PatientID_85
+# A tibble: 6 x 4
+  pids           age gender Class.ASD
+  <chr>        <int> <chr>  <chr>    
+1 PatientID_7     17 f      NO       
+2 PatientID_10    17 m      YES      
+3 PatientID_13    17 f      NO       
+4 PatientID_14    17 m      NO       
+5 PatientID_15    17 f      NO       
+6 PatientID_85    17 f      NO       
+~~~
+{: .output}
+
+
+
+~~~
+# If you want to arrange in reverse order it's also possible
+autism.data %>% 
+  arrange(desc(age)) %>%
+  select(pids,age,  gender, Class.ASD) %>%
+  head()
+~~~
+{: .language-r}
+
+
+
+~~~
+# A tibble: 6 x 4
+  pids            age gender Class.ASD
+  <chr>         <int> <chr>  <chr>    
+1 PatientID_8      64 m      NO       
+2 PatientID_432    61 m      YES      
+3 PatientID_496    61 f      NO       
+4 PatientID_204    60 f      YES      
+5 PatientID_449    59 m      YES      
+6 PatientID_72     58 m      NO       
 ~~~
 {: .output}
 
@@ -390,6 +345,7 @@ The `mutate()` function adds new columns for your data set
 ~~~
 autism.data %>%
   mutate(result_squared = result^2) %>%
+  select(pids, result, result_squared) %>%
   head()
 ~~~
 {: .language-r}
@@ -397,36 +353,42 @@ autism.data %>%
 
 
 ~~~
-  id A1_Score A2_Score A3_Score A4_Score A5_Score A6_Score A7_Score
-1  1        1        1        1        1        0        0        1
-2  2        1        1        0        1        0        0        0
-3  3        1        1        0        1        1        0        1
-4  4        1        1        0        1        0        0        1
-5  5        1        0        0        0        0        0        0
-6  6        1        1        1        1        1        0        1
-  A8_Score A9_Score A10_Score age gender      ethnicity jaundice autism
-1        1        0         0  26      f White-European       no     no
-2        1        0         1  24      m         Latino       no    yes
-3        1        1         1  27      m         Latino      yes    yes
-4        1        0         1  35      f White-European       no    yes
-5        1        0         0  40      f           <NA>       no     no
-6        1        1         1  36      m         Others      yes     no
-        country used_app_before result    age_desc relation Class.ASD
-1 United States              no      6 18 and more     Self        NO
-2        Brazil              no      5 18 and more     Self        NO
-3         Spain              no      8 18 and more   Parent       YES
-4 United States              no      6 18 and more     Self        NO
-5         Egypt              no      2 18 and more     <NA>        NO
-6 United States              no      9 18 and more     Self       YES
-         pids result_squared
-1 PatientID_1             36
-2 PatientID_2             25
-3 PatientID_3             64
-4 PatientID_4             36
-5 PatientID_5              4
-6 PatientID_6             81
+# A tibble: 6 x 3
+  pids        result result_squared
+  <chr>        <int>          <dbl>
+1 PatientID_1      6             36
+2 PatientID_2      5             25
+3 PatientID_3      8             64
+4 PatientID_4      6             36
+5 PatientID_5      2              4
+6 PatientID_6      9             81
 ~~~
 {: .output}
+
+
+> ## Section quiz
+>
+> Output a table (do not create an object) with  data only for female patients older than 30, 
+> with the columns pids, age, Class.ASD, result and scaled_result, where scaled_result is equal to age divided by result.
+> Arrange this table by the scaled_result column in descending order. 
+> 
+> {: .source}
+>
+> > ## Solution
+> > 
+> > ~~~
+> > autism.data %>% 
+> > filter(age > 30 & gender == "f") %>%
+> > select(pids, age, gender, Class.ASD, result) %>% 
+> > mutate(scaled_result = age/result) %>% 
+> > arrange(desc(scaled_result))
+> > ~~~
+> > 
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+
 
 You can also use `mutate()` to remove or edit existing columns
 
@@ -435,6 +397,7 @@ autism.data %>%
   mutate(age_desc = NULL, # this is to remove the age_desc column
          result = result + 1, # edit the existing result column
          agerank = rank(age)) %>% # add a new column called agerank
+  select(-ends_with("Score")) %>% #show nifty feature to use select to remove multiple columns at one with ends_with
   head()
 ~~~
 {: .language-r}
@@ -442,34 +405,17 @@ autism.data %>%
 
 
 ~~~
-  id A1_Score A2_Score A3_Score A4_Score A5_Score A6_Score A7_Score
-1  1        1        1        1        1        0        0        1
-2  2        1        1        0        1        0        0        0
-3  3        1        1        0        1        1        0        1
-4  4        1        1        0        1        0        0        1
-5  5        1        0        0        0        0        0        0
-6  6        1        1        1        1        1        0        1
-  A8_Score A9_Score A10_Score age gender      ethnicity jaundice autism
-1        1        0         0  26      f White-European       no     no
-2        1        0         1  24      m         Latino       no    yes
-3        1        1         1  27      m         Latino      yes    yes
-4        1        0         1  35      f White-European       no    yes
-5        1        0         0  40      f           <NA>       no     no
-6        1        1         1  36      m         Others      yes     no
-        country used_app_before result relation Class.ASD        pids
-1 United States              no      7     Self        NO PatientID_1
-2        Brazil              no      6     Self        NO PatientID_2
-3         Spain              no      9   Parent       YES PatientID_3
-4 United States              no      7     Self        NO PatientID_4
-5         Egypt              no      3     <NA>        NO PatientID_5
-6 United States              no     10     Self       YES PatientID_6
-  agerank
-1   328.5
-2   270.5
-3   358.0
-4   530.0
-5   595.5
-6   545.0
+# A tibble: 6 x 13
+     id   age gender ethnicity jaundice autism country used_app_before
+  <int> <int> <chr>  <chr>     <chr>    <chr>  <chr>   <chr>          
+1     1    26 f      White-Eu… no       no     United… no             
+2     2    24 m      Latino    no       yes    Brazil  no             
+3     3    27 m      Latino    yes      yes    Spain   no             
+4     4    35 f      White-Eu… no       yes    United… no             
+5     5    40 f      <NA>      no       no     Egypt   no             
+6     6    36 m      Others    yes      no     United… no             
+# ... with 5 more variables: result <dbl>, relation <chr>,
+#   Class.ASD <chr>, pids <chr>, agerank <dbl>
 ~~~
 {: .output}
 
@@ -490,7 +436,7 @@ autism.data %>%
 ~~~
 # A tibble: 2 x 3
   Class.ASD meanage count
-  <fct>       <dbl> <int>
+  <chr>       <dbl> <int>
 1 NO           28.4   514
 2 YES          31.3   189
 ~~~
@@ -514,7 +460,7 @@ autism.data %>%
 # A tibble: 4 x 6
 # Groups:   Class.ASD [?]
   Class.ASD gender mean.age max.age min.age count
-  <fct>     <fct>     <dbl>   <dbl>   <dbl> <int>
+  <chr>     <chr>     <dbl>   <dbl>   <dbl> <int>
 1 NO        f          28.7      61      17   233
 2 NO        m          28.1      64      17   281
 3 YES       f          31.3      60      17   103
@@ -553,3 +499,17 @@ autism.data %>%
 > {: .solution}
 {: .challenge}
 
+
+> ## Homework 
+>
+> You will need to refer to the tidyverse/dplyr [help documentation](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8) to complete these exercises. 
+> We still refer to them on a daily basis even though we've been using these libraries for year - so this 
+> really is best practice for working with R.
+>
+> 1. Create a table of number of patients by whether or not they've used the app before for each of the countries. (Hint: you will need to use the count() function for this).
+> 2. Is the average (mean) age of men or women greater in this dataset? Use group_by() and summarise() to find out
+> 3. In which country is the mean age of autism suffers highest? 
+> 4. In which country is the mean age of parents who are also ASD suffers highest? 
+>
+>
+> {: .source}

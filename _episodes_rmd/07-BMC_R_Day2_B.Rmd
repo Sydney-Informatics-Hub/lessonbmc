@@ -41,23 +41,22 @@ library(tidyverse)
 
 ![haven](../fig/haven_logo.png)
 
-haven is a package within the tidyverse that allows you to read in data from different sources. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
+haven is a package within the tidyverse that allows you to read in data from SAS, SPSS and STATA. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
 
 
 ```{r, warning=FALSE}
 # load haven
 library(haven)
 
-autism.data <- read.csv(file = "data/autism_pids.csv",
-                        header = TRUE,
-                        sep = ",")
+#autism.data <- read_sav(file = "data/autism_data.sav")
 ```
 
 
-```{r, include = FALSE, eval = FALSE}
+```{r, include = FALSE}
 #autism.data <- read_spss("data/autism_data.sav") TODO
 
-# TODO - Darya, I'm having trouble reading in the missing values from SPSS. Haven doesn't recognise my SPSS user-specified missing values...Would you know how to get this working? My hack is to run austism.data.spss[which(austism.data.spss == "NA", arr.ind = TRUE)] <- NA but its more complicated and confusing for our students than need be 
+# FIXME - Darya, I'm having trouble reading in the missing values from SPSS. Haven doesn't recognise my SPSS user-specified missing values...Would you know how to get this working? My hack is to run austism.data.spss[which(austism.data.spss == "NA", arr.ind = TRUE)] <- NA but its more complicated and confusing for our students than need be 
+autism.data <- read_csv("data/autism_pids.csv")
 ```
 
 
@@ -75,8 +74,8 @@ You will also notice that the spelling follows British spelling rather than Amer
 The `select()` function allows you to pick or remove variables based on their names. Note that you do not use `"` nor `'` to wrap the column names as you would with a base R function
 
 ```{r, warning = FALSE}
-# select just the age, gender and result columns from autism.data
-selected.autism.data <- select(autism.data, age, gender, result)
+# select just the age, gender and result columns from autism.data (and rename country on the fly)
+selected.autism.data <- select(autism.data, age, gender, result, country = country)
 head(selected.autism.data)
 
 # select all columns except for ethnicity and country
@@ -109,6 +108,7 @@ autism.data %>%
 ### filter()
 The `filter()` function allows you to filter rows of your dataset that match some condition. We can also combine this with some of R' base functions. Here, we'll use `head()` to restrict the output number of rows
 ```{r, warning = FALSE}
+# get the first 6 people who are over 17
 autism.data %>%
   filter(age == 17) %>%
   head()
@@ -135,7 +135,15 @@ The `arrange()` function allows you to reorder the rows of your dataset
 ```{r, warning = FALSE}
 autism.data %>%
   arrange(age) %>%
+  select(pids,age,  gender, Class.ASD) %>%
   head()
+
+# If you want to arrange in reverse order it's also possible
+autism.data %>% 
+  arrange(desc(age)) %>%
+  select(pids,age,  gender, Class.ASD) %>%
+  head()
+
 ```
 
 ### mutate()
@@ -143,8 +151,34 @@ The `mutate()` function adds new columns for your data set
 ```{r, warning = FALSE}
 autism.data %>%
   mutate(result_squared = result^2) %>%
+  select(pids, result, result_squared) %>%
   head()
 ```
+
+
+> ## Section quiz
+>
+> Output a table (do not create an object) with  data only for female patients older than 30, 
+> with the columns pids, age, Class.ASD, result and scaled_result, where scaled_result is equal to age divided by result.
+> Arrange this table by the scaled_result column in descending order. 
+> 
+> {: .source}
+>
+> > ## Solution
+> > 
+> > ~~~
+> > autism.data %>% 
+> > filter(age > 30 & gender == "f") %>%
+> > select(pids, age, gender, Class.ASD, result) %>% 
+> > mutate(scaled_result = age/result) %>% 
+> > arrange(desc(scaled_result))
+> > ~~~
+> > 
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+
 
 You can also use `mutate()` to remove or edit existing columns
 ```{r, warning = FALSE}
@@ -152,6 +186,7 @@ autism.data %>%
   mutate(age_desc = NULL, # this is to remove the age_desc column
          result = result + 1, # edit the existing result column
          agerank = rank(age)) %>% # add a new column called agerank
+  select(-ends_with("Score")) %>% #show nifty feature to use select to remove multiple columns at one with ends_with
   head()
 ```
 
@@ -206,3 +241,17 @@ autism.data %>%
 > {: .solution}
 {: .challenge}
 
+
+> ## Homework 
+>
+> You will need to refer to the tidyverse/dplyr [help documentation](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8) to complete these exercises. 
+> We still refer to them on a daily basis even though we've been using these libraries for year - so this 
+> really is best practice for working with R.
+>
+> 1. Create a table of number of patients by whether or not they've used the app before for each of the countries. (Hint: you will need to use the count() function for this).
+> 2. Is the average (mean) age of men or women greater in this dataset? Use group_by() and summarise() to find out
+> 3. In which country is the mean age of autism suffers highest? 
+> 4. In which country is the mean age of parents who are also ASD suffers highest? 
+>
+>
+> {: .source}
