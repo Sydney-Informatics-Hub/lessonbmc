@@ -1,13 +1,17 @@
 ---
 title: "Data Wrangling"
-subtitle: "Day 2"
-author: "Nicholas Ho, Richard Morris"
+author: "Nicholas Ho, Richard Morris, Darya Vanichkina, Maryam Montazerolghaem"
 keypoints:
-- FIXME
+- R has a large community of developers creating power tools for data analysis
+- Tidyverse is a great data wrangling suite of functions
+- Use haven to read in your SPSS, STATA, etc files
+- Use dplyr to perform the common data manipulations
 objectives:
-- FIXME
-questions: FIXME
+- Introduction into tidyverse
+- Introduction into the grammar of tidyverse
+questions: Tidyverse
 source: Rmd
+subtitle: Day 2
 teaching: 50
 exercises: 25
 ---
@@ -16,14 +20,16 @@ exercises: 25
 source("../bin/chunk-options.R")
 knitr_fig_path("02-")
 ```
-
-[Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
-
 ## Data wrangling
 
-![](tidyr.jpg) #corrected here from tidyverse_website.png not sure if this is intended behavior TODO
+![tidyverse](../fig/tidyverse_website.png)
 
-So far, we've been using R's base functions to perform our data wrangling and manipulation. I would highly encourage you to learn to use the [tidyverse](https://www.tidyverse.org/) collection of data wrangling and visualisation tools. These are excellent tools that allows you to write elegent, legible code that gets your data into the right shape prior to analysis.
+
+So far, we've been using R's base functions to perform our data wrangling and manipulation. 
+
+The advantage of working with R is that R has a large community of developers creating free and powerful tools (called libraries) which we can use. This includes the latest data wrangling, visualisation, statistical testing and machine learning tools.
+
+I would highly encourage you to learn to use the [tidyverse](https://www.tidyverse.org/) collection of data wrangling and visualisation tools. These are excellent tools that allows you to write elegent, legible code that gets your data into the right shape prior to analysis.
 
 ```{r, warning=FALSE}
 # load tidyverse
@@ -33,14 +39,19 @@ library(tidyverse)
 
 ## haven
 
- TODO add haven logo here
+![haven](../fig/haven_logo.png)
 
 haven is a package within the tidyverse that allows you to read in data from different sources. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
 
+TODO - Darya, I'm having trouble reading in the missing values from SPSS. Haven doesn't recognise my SPSS user-specified missing values...Would you know how to get this working? My hack is to run austism.data.spss[which(austism.data.spss == "NA", arr.ind = TRUE)] <- NA but its more complicated and confusing for our students than need be 
 ```{r, warning=FALSE}
 # load haven
 library(haven)
-#autism.data.spss <- read_spss("data/autism_data.sav") #TODO LOAD THIS DATA????
+#autism.data <- read_spss("data/autism_data.sav") TODO
+
+autism.data <- read.csv(file = "data/autism_pids.csv",
+                        header = TRUE,
+                        sep = ",")
 ```
 
 
@@ -48,7 +59,7 @@ Next, we'll step into one of the most popular tidyverse package called [dplyr](h
 
 ## dpylr
 
-TODO add hex-dplyr.jpeg
+![dplyr](../fig/hex-dplyr.jpeg)
 
 `dpylr` allows you to perform some of the most common data manipulation tasks you'll encounter in R. The background of the `dplyr` package is that it is a "grammar" of data manipulation and that its functions are a set of verbs.
 
@@ -69,7 +80,7 @@ head(selected.autism.data)
 
 The tidyverse allows you to pipe functions together to create a chain to data manipulations. This allows you to redirect the output of one function into another one. Those familiar with bash or *nix will be familiar with piping with `|`. Here, we use `%>%` to pipe.
 
-This makes each step discrete and helps immensely with readability
+This makes each step discrete and helps immensely with readability. Also reduces your need to create temporary variables.
 
 ```{r}
 autism.data %>% select(age, gender, result) %>% head()
@@ -132,16 +143,9 @@ autism.data %>%
 You can also use `mutate()` to remove or edit existing columns
 ```{r}
 autism.data %>%
-  mutate(age_desc = NULL, #remove column
-         result = result + 1, # edit existing column
-         agerank = rank(age)) %>% # add column
-  head()
-```
-
-You can use the `transmute()` function to keep only the column you created
-```{r}
-autism.data %>%
-  transmute(agerank = rank(age)) %>%
+  mutate(age_desc = NULL, # this is to remove the age_desc column
+         result = result + 1, # edit the existing result column
+         agerank = rank(age)) %>% # add a new column called agerank
   head()
 ```
 
@@ -165,21 +169,33 @@ autism.data %>%
             count = n())
 ```
 
-## Quiz
 
-1. Create a summary table for mean `result` for a grouping by gender, autism class and family history of autism
-```{r, eval = FALSE}
-autism.data %>%
+> ## Section quiz
+>
+> 1. Create a summary table for mean 'result' after grouping by gender, autism class and family history of autism
+>
+> 2. Do the same as Q1 and now arrange from the lowest mean 'result' to the highest
+>
+> {: .source}
+>
+> > ## Solution
+> >
+> > 1. Despite the word of the question, we will first 'group_by' and then 'summarise'
+> >
+> > ~~~
+> > autism.data %>% 
+> >   group_by(gender, Class.ASD, autism) %>% 
+> >   summarise(mean.result = mean(result))
+> > ~~~
+> > 2. We need to add in an 'arrange' at the end of our command 
+> >
+> > ~~~
+> > autism.data %>% 
+> >   group_by(gender, Class.ASD, autism) %>% 
+> >   summarise(mean.result = mean(result)) %>%
+> >   arrange(mean.result)
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
 
-  # your code here
-
-```
-
-
-2. (Intermediate) Do the same as above and now arrange from the lowest mean `result` to the highest
-```{r, eval = FALSE}
-autism.data %>%
-
-  # your code here
-
-```

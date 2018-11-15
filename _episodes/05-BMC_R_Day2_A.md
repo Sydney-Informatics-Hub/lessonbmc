@@ -255,13 +255,9 @@ First let's read in the autism screening dataset from last lesson with the same 
 
 
 ~~~
-autism.data <- read.csv(file = "data/autism_data.csv",
+autism.data <- read.csv(file = "data/autism_pids.csv",
                         header = TRUE,
-                        sep = ",",
-                        na.strings = "?")
-
-# fix age into numeric
-autism.data$age <- as.integer(as.character(autism.data$age))
+                        sep = ",")
 ~~~
 {: .language-r}
 
@@ -288,10 +284,12 @@ We can incorporate our knowledge of `if` statements with `for` loops.
 
 Following our email analogy, imagine you check your email in the morning and you have 10 new items. You iteratively go through each one and perform some task on it e.g. reply, flag, report junk.
 
-We can put an `if` statement such that if the email is from "Nigerian Prince", then you will 'report junk'. 
+We can put an `if` statement such that if the email title is "You won't believe how he lost 10kg in just 2 weeks", then you will 'report junk'. 
 
-Or if the email is from your boss, you will 'flag' it.
+Or if the email is from your boss, you will 'flag' it as important.
 
+
+Here, we will go thorugh every row in the autism.data data frame and print out "PatientID_X diagnosed with ASD" for those with ASD according to this mobile app.
 
 ~~~
 numrows <- nrow(autism.data)
