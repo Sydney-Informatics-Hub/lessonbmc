@@ -513,3 +513,7 @@ autism.data %>%
 >
 >
 > {: .source}
+> > 
+> > {: .output}
+> {: .solution}
+{: .challenge}
