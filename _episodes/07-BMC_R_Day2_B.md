@@ -70,18 +70,20 @@ x dplyr::lag()    masks stats::lag()
 
 haven is a package within the tidyverse that allows you to read in data from different sources. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
 
-TODO - Darya, I'm having trouble reading in the missing values from SPSS. Haven doesn't recognise my SPSS user-specified missing values...Would you know how to get this working? My hack is to run austism.data.spss[which(austism.data.spss == "NA", arr.ind = TRUE)] <- NA but its more complicated and confusing for our students than need be 
+
 
 ~~~
 # load haven
 library(haven)
-#autism.data <- read_spss("data/autism_data.sav") TODO
 
 autism.data <- read.csv(file = "data/autism_pids.csv",
                         header = TRUE,
                         sep = ",")
 ~~~
 {: .language-r}
+
+
+
 
 
 Next, we'll step into one of the most popular tidyverse package called [dplyr](https://dplyr.tidyverse.org/).
@@ -217,13 +219,6 @@ autism.data %>%
   head()
 ~~~
 {: .language-r}
-
-
-
-~~~
-Warning: package 'bindrcpp' was built under R version 3.4.4
-~~~
-{: .error}
 
 
 
@@ -545,6 +540,7 @@ autism.data %>%
 > >   group_by(gender, Class.ASD, autism) %>% 
 > >   summarise(mean.result = mean(result))
 > > ~~~
+> > 
 > > 2. We need to add in an 'arrange' at the end of our command 
 > >
 > > ~~~

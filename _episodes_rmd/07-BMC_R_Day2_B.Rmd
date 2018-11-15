@@ -43,15 +43,21 @@ library(tidyverse)
 
 haven is a package within the tidyverse that allows you to read in data from different sources. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
 
-TODO - Darya, I'm having trouble reading in the missing values from SPSS. Haven doesn't recognise my SPSS user-specified missing values...Would you know how to get this working? My hack is to run austism.data.spss[which(austism.data.spss == "NA", arr.ind = TRUE)] <- NA but its more complicated and confusing for our students than need be 
+
 ```{r, warning=FALSE}
 # load haven
 library(haven)
-#autism.data <- read_spss("data/autism_data.sav") TODO
 
 autism.data <- read.csv(file = "data/autism_pids.csv",
                         header = TRUE,
                         sep = ",")
+```
+
+
+```{r, include = FALSE, eval = FALSE}
+#autism.data <- read_spss("data/autism_data.sav") TODO
+
+# TODO - Darya, I'm having trouble reading in the missing values from SPSS. Haven doesn't recognise my SPSS user-specified missing values...Would you know how to get this working? My hack is to run austism.data.spss[which(austism.data.spss == "NA", arr.ind = TRUE)] <- NA but its more complicated and confusing for our students than need be 
 ```
 
 
@@ -68,7 +74,7 @@ You will also notice that the spelling follows British spelling rather than Amer
 ### select()
 The `select()` function allows you to pick or remove variables based on their names. Note that you do not use `"` nor `'` to wrap the column names as you would with a base R function
 
-```{r}
+```{r, warning = FALSE}
 # select just the age, gender and result columns from autism.data
 selected.autism.data <- select(autism.data, age, gender, result)
 head(selected.autism.data)
@@ -82,19 +88,19 @@ The tidyverse allows you to pipe functions together to create a chain to data ma
 
 This makes each step discrete and helps immensely with readability. Also reduces your need to create temporary variables.
 
-```{r}
+```{r, warning = FALSE}
 autism.data %>% select(age, gender, result) %>% head()
 ```
 
 Or let's make this more legible
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   select(age, gender, result) %>%
   head()
 ```
 
 Redirect the output of this chain of pipes into a new dataframe
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   select(age, gender, result) -> selected.autism.data
 ```
@@ -102,14 +108,14 @@ autism.data %>%
 
 ### filter()
 The `filter()` function allows you to filter rows of your dataset that match some condition. We can also combine this with some of R' base functions. Here, we'll use `head()` to restrict the output number of rows
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   filter(age == 17) %>%
   head()
 ```
 
 Combine this with the `select()` function to select only the age, gender and country of the 17 year olds in the autism dataset
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   filter(age == 17) %>%
   select(age, gender, country) %>%
@@ -117,7 +123,7 @@ autism.data %>%
 ```
 
 What are the counts for countries of the 17 year olds in the autism dataset
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   filter(age == 17) %>%
   select(country) %>%
@@ -126,7 +132,7 @@ autism.data %>%
 
 ### arrange()
 The `arrange()` function allows you to reorder the rows of your dataset
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   arrange(age) %>%
   head()
@@ -134,14 +140,14 @@ autism.data %>%
 
 ### mutate()
 The `mutate()` function adds new columns for your data set
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   mutate(result_squared = result^2) %>%
   head()
 ```
 
 You can also use `mutate()` to remove or edit existing columns
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   mutate(age_desc = NULL, # this is to remove the age_desc column
          result = result + 1, # edit the existing result column
@@ -152,7 +158,7 @@ autism.data %>%
 
 ### summarise() and group_by()
 The `summarise()` function reduces down multiple values into one summary statistic. To do so, we need to tell R which groups we're interested in summarising our data into. To do so, we need to use the `group_by()` function prior to calling `summarise()`
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   group_by(Class.ASD) %>%
   summarise(meanage = mean(age, na.rm = TRUE),
@@ -160,7 +166,7 @@ autism.data %>%
 ```
 
 You can group by more than one variable
-```{r}
+```{r, warning = FALSE}
 autism.data %>%
   group_by(Class.ASD, gender) %>%
   summarise(mean.age = mean(age, na.rm = TRUE),
@@ -187,6 +193,7 @@ autism.data %>%
 > >   group_by(gender, Class.ASD, autism) %>% 
 > >   summarise(mean.result = mean(result))
 > > ~~~
+> > 
 > > 2. We need to add in an 'arrange' at the end of our command 
 > >
 > > ~~~
