@@ -64,24 +64,38 @@ library(tidyverse)
 {: .output}
 
 
-## haven
-
-![haven](../fig/haven_logo.png)
-
-haven is a package within the tidyverse that allows you to read in data from SAS, SPSS and STATA. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
-
-
 
 ~~~
-# load haven
-library(haven)
-
-#autism.data <- read_sav(file = "data/autism_data.sav")
+autism.data <- read_csv("data/autism_pids.csv")
 ~~~
 {: .language-r}
 
 
 
+~~~
+Parsed with column specification:
+cols(
+  .default = col_integer(),
+  gender = col_character(),
+  ethnicity = col_character(),
+  jaundice = col_character(),
+  autism = col_character(),
+  country = col_character(),
+  used_app_before = col_character(),
+  age_desc = col_character(),
+  relation = col_character(),
+  Class.ASD = col_character(),
+  pids = col_character()
+)
+~~~
+{: .output}
+
+
+
+~~~
+See spec(...) for full column specifications.
+~~~
+{: .output}
 
 
 Next, we'll step into one of the most popular tidyverse package called [dplyr](https://dplyr.tidyverse.org/).
@@ -418,6 +432,24 @@ autism.data %>%
 #   Class.ASD <chr>, pids <chr>, agerank <dbl>
 ~~~
 {: .output}
+
+
+## haven (interlude)
+
+![haven](../fig/haven_logo.png)
+
+haven is a package within the tidyverse that allows you to read in data from SAS, SPSS and STATA. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
+
+
+
+~~~
+# load haven
+library(haven)
+autism.data.spss <- read_spss("data/autism_data.sav")
+autism.data.spss <- autism.data.spss %>% mutate(ethnicity = na_if(ethnicity, "NA"), 
+                            age = na_if(age, "?"))
+~~~
+{: .language-r}
 
 
 ### summarise() and group_by()

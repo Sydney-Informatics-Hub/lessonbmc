@@ -34,28 +34,6 @@ I would highly encourage you to learn to use the [tidyverse](https://www.tidyver
 ```{r, warning=FALSE}
 # load tidyverse
 library(tidyverse)
-```
-
-
-## haven
-
-![haven](../fig/haven_logo.png)
-
-haven is a package within the tidyverse that allows you to read in data from SAS, SPSS and STATA. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
-
-
-```{r, warning=FALSE}
-# load haven
-library(haven)
-
-#autism.data <- read_sav(file = "data/autism_data.sav")
-```
-
-
-```{r, include = FALSE}
-#autism.data <- read_spss("data/autism_data.sav") TODO
-
-# FIXME - Darya, I'm having trouble reading in the missing values from SPSS. Haven doesn't recognise my SPSS user-specified missing values...Would you know how to get this working? My hack is to run austism.data.spss[which(austism.data.spss == "NA", arr.ind = TRUE)] <- NA but its more complicated and confusing for our students than need be 
 autism.data <- read_csv("data/autism_pids.csv")
 ```
 
@@ -188,6 +166,23 @@ autism.data %>%
          agerank = rank(age)) %>% # add a new column called agerank
   select(-ends_with("Score")) %>% #show nifty feature to use select to remove multiple columns at one with ends_with
   head()
+```
+
+
+## haven (interlude)
+
+![haven](../fig/haven_logo.png)
+
+haven is a package within the tidyverse that allows you to read in data from SAS, SPSS and STATA. For example, if our autism dataset was saved as an .sav file (SPSS), we can use `haven` to read that in.
+
+
+```{r, warning=FALSE}
+# load haven
+library(haven)
+autism.data.spss <- read_spss("data/autism_data.sav")
+autism.data.spss <- autism.data.spss %>% mutate(ethnicity = na_if(ethnicity, "NA"), 
+                            age = na_if(age, "?"))
+
 ```
 
 
