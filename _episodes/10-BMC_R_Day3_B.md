@@ -22,7 +22,10 @@ exercises: 25
 We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now onto hypothesis testing and statistical analysis. 
 
 
-Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data.
+Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data. For statistical consultation, please contact Sydney Informatics Hub's statistics team. 
+
+"To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of"
+  - Ronald Fisher 1938
 
 
 The data for this session can be [downloaded from here](https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv). This is a selection of datapoints from a database of demographic and clinical measurements of Parkinson's patients and controls. More information about this dataset can be found at http://physionet.org/physiobank/database/gaitpdb/.
@@ -176,7 +179,7 @@ ggplot(gait, aes(y=TUAG, x = Group)) +
 ~~~
 {: .language-r}
 
-
+<img src="../fig/rmd-10-unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="612" style="display: block; margin: auto;" />
 
 ~~~
 # have a bit of fun and change the plot to the Wall St Journal's style
@@ -186,6 +189,8 @@ ggplot(gait, aes(y=TUAG, x = Group,fill = Group)) +
   theme_wsj()
 ~~~
 {: .language-r}
+
+<img src="../fig/rmd-10-unnamed-chunk-5-2.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="612" style="display: block; margin: auto;" />
 > ## Section quiz
 > 1. Perform the Welch 2-sample t-test for TUAG by gender? Generate violin plots of this.
 > {: .source}
@@ -248,7 +253,7 @@ ggplot(gait, aes(y=TUAG, x = Study)) +
 <img src="../fig/rmd-10-unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="612" style="display: block; margin: auto;" />
 
 
-Let's assume that the ANOVA did show difference in means between groups. We can do post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences
+Let's assume that the we had sufficient evidence from the ANOVA to reject the null. We can then perform post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences
 
 ~~~
 TukeyHSD(aov_study)
@@ -275,26 +280,14 @@ Si-Ju -0.8373877 -2.5182543 0.843479 0.4638330
 R has a variety of statistical tests available. Google is your best friend here.
 
 
-## Simple linear regression
+## Linear regression
 
 Let's say that for the Parksinson's patients, we want to make a model to predict `UPDRS` score using the `UPDRSM` 
 
 ~~~
 gait_pd <- gait %>%
   filter(Group == "PD")
-~~~
-{: .language-r}
 
-
-
-~~~
-Warning: package 'bindrcpp' was built under R version 3.4.4
-~~~
-{: .error}
-
-
-
-~~~
 # Let's plot this first
 ggplot(gait_pd, aes(x = UPDRSM, y = UPDRS)) +
   geom_point() +
@@ -456,7 +449,7 @@ pca_plotdata <- data.frame(pca$x)
 pca_plotdata <- pca_plotdata %>%
   mutate(samples = as.factor(golub.cl)) 
 
-# plot with ggplot
+# plot PC1 and PC2 with ggplot
 ggplot(pca_plotdata, aes(x = PC1, y = PC2, colour = samples)) +
   geom_point()
 ~~~
@@ -465,7 +458,7 @@ ggplot(pca_plotdata, aes(x = PC1, y = PC2, colour = samples)) +
 <img src="../fig/rmd-10-unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="612" style="display: block; margin: auto;" />
 
 ~~~
-# inspect the cumulative proportion of variance explained
+# inspect the cumulative proportion of variance explained by each PC
 summary(pca)
 ~~~
 {: .language-r}
@@ -506,7 +499,17 @@ Cumulative Proportion  1.00000 1.000e+00
 {: .output}
 
 
-## Visualisation and clustering with gplots and heatmap.2()
+
+~~~
+# quickly plot the cumulative proportion of variance explained using base R's plotting function
+plot(summary(pca)$importance["Cumulative Proportion",])
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-10-unnamed-chunk-12-2.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="612" style="display: block; margin: auto;" />
+
+
+## Clustering and heatmap
 
 ~~~
 # please install gplots prior to running the below code by running: install.packages("gplots")
@@ -519,7 +522,7 @@ favgenes <- c(703,717,766,829,896,1037,1334,1665,1817,1834,2002,2124,2386,2600,2
 heatmap.2(golub[ ,favgenes], 
           trace = "none",
           scale = "column",
-          RowSideColors = c(rep("red", 27), rep("blue", 11)),
+          RowSideColors = c(rep("yellow", 27), rep("darkgreen", 11)),
           dendrogram = "both", 
           col = "bluered")
 ~~~
