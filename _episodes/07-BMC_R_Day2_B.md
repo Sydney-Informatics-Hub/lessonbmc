@@ -100,11 +100,11 @@ See spec(...) for full column specifications.
 
 Next, we'll step into one of the most popular tidyverse package called [dplyr](https://dplyr.tidyverse.org/).
 
-## dpylr
+## dplyr
 
 ![dplyr](../fig/hex-dplyr.jpeg)
 
-`dpylr` allows you to perform some of the most common data manipulation tasks you'll encounter in R. The background of the `dplyr` package is that it is a "grammar" of data manipulation and that its functions are a set of verbs.
+`dplyr` allows you to perform some of the most common data manipulation tasks you'll encounter in R. The background of the `dplyr` package is that it is a "grammar" of data manipulation and that its functions are a set of verbs.
 
 You will also notice that the spelling follows British spelling rather than American (Hadley Wickham, author and maintainer of the tidyverse, is from New Zealand), but they can actually be used interchangeably. For example, `summarise()` and `summarize()` perform the same function.
 
