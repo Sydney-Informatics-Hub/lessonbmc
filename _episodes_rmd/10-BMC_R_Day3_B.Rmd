@@ -1,25 +1,238 @@
 ---
-title: "Statistics"
-subtitle: "Day 3"
-author: "Nicholas Ho, Richard Morris"
+title: "Data and statistical analysis"
+author: "Nicholas Ho, Darya Vanichkina, Richard Morris, Maryam Montazerolghaem"
 keypoints:
-- FIXME
-objectives:
-- FIXME
-questions: FIXME
+- R has a large community of developers creating power tools for data and statistical analysis
+objectives: 
+- Introduction into using R for statistical analysis and visualisation
+questions: Using R for data and statistical analysis
 source: Rmd
+subtitle: Day 3
 teaching: 60
-exercises: 30
+exercises: 25
 ---
 
 ```{r echo=FALSE}
 source("../bin/chunk-options.R")
-knitr_fig_path("03-")
+knitr_fig_path("10-")
 ```
 
-[Back to homepage](https://n-ho.github.io/bmc_r_workshop_2018/)
+
+## Data and statistical analysis
+
+We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now onto hypothesis testing and statistical analysis. 
 
 
-## Stats
+Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data.
 
-FIXME
+
+The data for this session can be [downloaded from here](https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv). This is a selection of datapoints from a database of demographic and clinical measurements of Parkinson's patients and controls. More information about this dataset can be found at http://physionet.org/physiobank/database/gaitpdb/.
+
+Please download this .csv file into your working directory's `data` folder.
+
+```{r, warning=FALSE, message = FALSE}
+library(tidyverse)
+
+gait <- read.csv("data/gait_clean.csv", 
+                 header = TRUE,
+                 row.names = 1)
+
+# another way to read in this CSV file is to use the URL option in read.csv()
+gait <- read.csv("https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv", 
+                 header = TRUE,
+                 row.names = 1)
+
+# let's inspect the data
+summary(gait)
+```
+
+
+## Correlation
+
+We're interested to see if there's any correlation between two clinical measures: UPDRS (Unified Parkinson's Disease Rating Scale) and TUAG (Timed Up And Go Test)
+
+```{r, warning=FALSE, message = FALSE}
+cor(gait$UPDRS, gait$TUAG, method = "spearman")
+
+ggplot(gait, aes(x = TUAG, y = UPDRS)) +
+  geom_point()
+```
+
+> ## Section quiz
+> 1. What's the Spearman's rank correlation coefficient between UPDRS and UPDRSM? 
+> {: .source}
+> > ## Solution
+> > 1. 
+> > ~~~
+> > cor(gait$UPDRS, gait$UPDRSM, method = "spearman")
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+
+
+We're interested to see if there's any correlation between any of the clinical variables in the dataset. Let's explore this by generating a correlation plot.
+```{r, warning=FALSE, message = FALSE}
+# please install corrplot prior to running the below code by running: install.packages("corrplot")
+library(corrplot)
+
+# keep the clinical variables
+gait_clin <- gait %>%
+  select(HoehnYahr, UPDRS, UPDRSM, TUAG)
+
+# create a correlation matrix of the clinical markers using Spearman correlation
+correlations <- cor(gait_clin, method = "spearman")
+
+# create the correlation plot
+corrplot(correlations, method = "color")
+```
+
+
+## Hypothesis testing 
+
+
+Let's say we want to simply compare the `TUAG` score between `Group` by using the 2-sample t-test. Our null hypothesis is that there is no difference between the mean `TUAG` of the Parkinson's and Control participants. By default in R, the `t.test()` function will perform Welch's 2-sample t-test. We can plot this with a violin plot
+```{r, warning=FALSE, fig.show = 'hide', message = FALSE}
+t.test(TUAG ~ Group, data = gait)
+  
+# Let's visualise this data
+ggplot(gait, aes(y=TUAG, x = Group)) + 
+  geom_violin() 
+
+# have a bit of fun and change the plot to the Wall St Journal's style
+library(ggthemes)
+ggplot(gait, aes(y=TUAG, x = Group,fill = Group)) + 
+  geom_violin() + 
+  theme_wsj()
+
+```
+> ## Section quiz
+> 1. Perform the Welch 2-sample t-test for TUAG by gender? Generate violin plots of this.
+> {: .source}
+> > ## Solution
+> > 1. 
+> > ~~~
+> > t.test(TUAG ~ Gender, data = gait)
+> > ggplot(gait, aes(y=TUAG, x = Group)) + geom_violin() 
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+
+We can perform the non-parametric Wilcoxon-Mann-Whitney Test. Here the null hypothesis is that the distributions of the two groups are the same.
+```{r, warning=FALSE, message = FALSE}
+wilcox.test(TUAG ~ Group, data = gait)
+```
+
+
+We can then perform an ANOVA using the `Study` grouping of patients. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups.
+```{r, warning=FALSE, message = FALSE}
+aov_study <- aov(TUAG ~ Study, data = gait)
+summary(aov_study)
+
+ggplot(gait, aes(y=TUAG, x = Study)) + 
+  geom_violin() 
+```
+
+
+Let's assume that the ANOVA did show difference in means between groups. We can do post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences
+```{r, warning=FALSE, message = FALSE}
+TukeyHSD(aov_study)
+```
+
+
+R has a variety of statistical tests available. Google is your best friend here.
+
+
+## Simple linear regression
+
+Let's say that for the Parksinson's patients, we want to make a model to predict `UPDRS` score using the `UPDRSM` 
+```{r, message = FALSE}
+gait_pd <- gait %>%
+  filter(Group == "PD")
+
+# Let's plot this first
+ggplot(gait_pd, aes(x = UPDRSM, y = UPDRS)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = TRUE)
+```
+
+Fit a linear regression predicting UPDRS using UPDRSM, and look at the summary of the results
+```{r, warning=FALSE, fig.show = 'hide', message = FALSE}
+gait_pd_slr <- lm(UPDRS ~ UPDRSM, data = gait_pd)
+summary(gait_pd_slr)
+
+gait_pd_slr$coefficients
+
+plot(gait_pd_slr)
+```
+
+
+What if we now include `Age` in our model
+```{r, warning=FALSE, fig.show = 'hide', message = FALSE}
+gait_pd_mlr <- lm(UPDRS ~ UPDRSM + Age, data = gait_pd)
+summary(gait_pd_mlr)
+
+gait_pd_mlr$coefficients
+
+plot(gait_pd_mlr)
+```
+
+
+## Visualisation with PCA
+
+We will use PCA and plot the first 2 Principal Components to observe the variance in a microarray dataset. This is a famous dataset from 1999 where 27 acute lymphoblatic leukaemia (ALL) and 11 acute myeloid leukaemia (AML) patient's gene expression data were measured for 3051 genes.
+
+First, we need to install and load up the `multtest` package which comes with the `golub` data.
+```{r, message = FALSE}
+# please install multtest prior to running the below code by running: install.packages("multtest")
+library(multtest)
+data(golub)
+
+# this is a vector of patient's diagnoses. ALL is 0 and AML is 1
+table(golub.cl)
+
+# let's try PCA in R for visualisation. First, we have to transpose the dataset because we want each patient to be recorded in rows and genes in columns
+golub <- t(golub)
+
+# perform PCA with the input data z-scored such that the mean for each gene is 0 and the SD for each gene is 1
+pca <- prcomp(golub, scale = TRUE, center = TRUE)
+
+# I'm just interested in plotting the Principal Components. This is in the "x" matrix of the pca object
+pca_plotdata <- data.frame(pca$x)
+
+# attach the patient diagnosis as we will be colouring in our plot with this
+pca_plotdata <- pca_plotdata %>%
+  mutate(samples = as.factor(golub.cl)) 
+
+# plot with ggplot
+ggplot(pca_plotdata, aes(x = PC1, y = PC2, colour = samples)) +
+  geom_point()
+
+# inspect the cumulative proportion of variance explained
+summary(pca)
+
+```
+
+
+## Visualisation and clustering with gplots and heatmap.2()
+```{r, message = FALSE}
+# please install gplots prior to running the below code by running: install.packages("gplots")
+library(gplots)
+
+# my favourite genes are in these columns
+favgenes <- c(703,717,766,829,896,1037,1334,1665,1817,1834,2002,2124,2386,2600,2645,2801,2851,2939)
+
+# let's make a heatmap of my favourite genes
+heatmap.2(golub[ ,favgenes], 
+          trace = "none",
+          scale = "column",
+          RowSideColors = c(rep("red", 27), rep("blue", 11)),
+          dendrogram = "both", 
+          col = "bluered")
+```
+
+
+
