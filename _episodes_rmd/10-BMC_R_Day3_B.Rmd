@@ -20,14 +20,14 @@ knitr_fig_path("10-")
 
 ## Data and statistical analysis
 
-We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now we will use core R librarie to perform hypothesis testing and statistical analysis. 
+We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now we will use core R libraries to perform hypothesis testing and statistical analysis. 
 
 
 Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data. If you'd like a statistical consultation for your specific project, please [contact Sydney Informatics Hub's statistics team](https://informatics.sydney.edu.au/help/) (select the "less than a day" of help option). 
 
 > *To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of*
+> - Ronald Fisher 1938
 
-- Ronald Fisher 1938
 
 
 The data for this session can be [downloaded from here](https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv). This is a selection of datapoints from a database of demographic and clinical measurements of Parkinson's patients and controls. More information about this dataset can be found at http://physionet.org/physiobank/database/gaitpdb/.
@@ -39,12 +39,14 @@ library(tidyverse)
 
 gait <- read.csv("data/gait_clean.csv", 
                  header = TRUE,
-                 row.names = 1)
+                 row.names = 1,
+                 na.strings = "NaN")
 
 # another way to read in this CSV file is to use the URL option in read.csv()
 gait <- read.csv("https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv", 
                  header = TRUE,
-                 row.names = 1)
+                 row.names = 1,
+                 na.strings = "NaN")
 
 # let's inspect the data
 summary(gait)
@@ -56,10 +58,10 @@ summary(gait)
 Let's explore whether there is correlation between two clinical measures: UPDRS (Unified Parkinson's Disease Rating Scale) and TUAG (Timed Up And Go Test). We will use the Spearman rank correlation here (as opposed to the default method, "pearson"). Remember that the Spearman correlation is useful when there is a monotonic relationship between two continuous or ordinal variables, i.e. the two variables tend change together, but not necessarily at a constant rate (if the rate is expected to be constant, use Pearson). 
 
 ```{r, warning=FALSE, message = FALSE}
-cor(gait$UPDRS, gait$TUAG, method = "spearman")
+cor(gait$UPDRS, gait$TUAG, method = "spearman", use="pairwise.complete.obs")
 
 ggplot(gait, aes(x = TUAG, y = UPDRS)) +
-  geom_point()
+  geom_point() + theme_bw()
 ```
 
 > ## Section quiz
@@ -68,7 +70,7 @@ ggplot(gait, aes(x = TUAG, y = UPDRS)) +
 > > ## Solution
 > > 1. 
 > > ~~~
-> > cor(gait$UPDRS, gait$UPDRSM, method = "spearman")
+> > cor(gait$UPDRS, gait$UPDRSM, method = "spearman", use="pairwise.complete.obs")
 > > ~~~
 > > {: .output}
 > {: .solution}
@@ -86,7 +88,7 @@ gait_clin <- gait %>%
   select(HoehnYahr, UPDRS, UPDRSM, TUAG)
 
 # create a correlation matrix of the clinical markers using Spearman correlation
-correlations <- cor(gait_clin, method = "spearman")
+correlations <- cor(gait_clin, method = "spearman" ,use="pairwise.complete.obs")
 
 # create the correlation plot
 corrplot(correlations, method = "color")
@@ -115,14 +117,14 @@ ggplot(gait, aes(y=TUAG, x = Group)) +
 > > 1. 
 > > ~~~
 > > t.test(TUAG ~ Gender, data = gait)
-> > ggplot(gait, aes(y=TUAG, x = Group)) + geom_violin() +theme_bw()
+> > ggplot(gait, aes(y=TUAG, x = Gender, fill = Gender)) + geom_violin() +theme_bw()
 > > ~~~
 > > {: .output}
 > {: .solution}
 {: .challenge}
 
 ### 2 samples: Wilcoxon-Mann-Whitney (non-parametric)
-The Mann–Whitney U test, also called the Mann–Whitney–Wilcoxon, Wilcoxon rank-sum test, or Wilcoxon–Mann–Whitney test (uggh) is sometimes preferred to the 2 sample t-test when the distribution cannot be assumed to be normal; for a discussion of whether this is appropriate see [here](http://thestatsgeek.com/2014/04/12/is-the-wilcoxon-mann-whitney-test-a-good-non-parametric-alternative-to-the-t-test/). 
+The Mann–Whitney U test, also called the Mann–Whitney–Wilcoxon, Wilcoxon rank-sum test, or Wilcoxon–Mann–Whitney test - is sometimes preferred to the 2 sample t-test when the distribution cannot be assumed to be normal; for a discussion of whether this is appropriate see [here](http://thestatsgeek.com/2014/04/12/is-the-wilcoxon-mann-whitney-test-a-good-non-parametric-alternative-to-the-t-test/). 
 
 Thankfully, performing it in R is easier than trying to figure out if it's appropriate...
 
@@ -137,15 +139,24 @@ wilcox.test(TUAG ~ Group, data = gait)
 
 If we want to explore the relationship between a variable and multiple factors, we can use an ANOVA. Many experiments you've told us about are amenable to this analysis technique, for example determining levels of which miRNA are distinct in cancer vs normal tissue (miRNA1, miRNA2, miRNA3, miRNA4 as factor 1, and cancer vs normal as factor 2); whether the concentration of a compound is distinct in WT vs mutant cell lines at different ages (age1, age2, age3) etc. 
 
-For our dummy example, we can perform an ANOVA using the `Study` grouping of patients. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups.
+We can perform an ANOVA using the `Study` grouping of patients and the `Group`, i.e. whether they are controls or have a PD diagnosis. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups.
+
+We can also code for more complex designs, wehere we expect Height and Weight to not affect the mean TUAG score independently (i.e. code for an interaction term).
 
 ```{r, warning=FALSE, message = FALSE}
-aov_study <- aov(TUAG ~ Study, data = gait) # change this to a 2-way anova using Study + something
- # show how to account for an interaction effect using * instead of + (and it's equivalent to + and :
+aov_study <- aov(TUAG ~ Study + Group, data = gait) 
 summary(aov_study)
+ggplot(gait, aes(y=TUAG, x = Study)) +geom_violin() +theme_bw() + facet_grid(~Group)
 
-ggplot(gait, aes(y=TUAG, x = Study)) + 
-  geom_violin() 
+aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait) 
+ # show how to account for an interaction effect using * instead of + (and it's equivalent to + and :
+summary(aov_study2)
+
+aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait) 
+ # show how to account for an interaction effect using * instead of + (and it's equivalent to + and :
+summary(aov_study3)
+
+
 ```
 
 Let's assume that the we had sufficient evidence from the ANOVA to reject the null. We would then perform post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences:
@@ -170,7 +181,7 @@ gait_pd <- gait %>%
 # Let's plot this first
 ggplot(gait_pd, aes(x = UPDRSM, y = UPDRS)) +
   geom_point() +
-  geom_smooth(method = 'lm', se = TRUE)
+  geom_smooth(method = 'lm', se = TRUE) + theme_bw()
 ```
 
 Fit a linear regression predicting UPDRS using UPDRSM, and look at the summary of the results
@@ -202,7 +213,6 @@ We will use PCA and plot the first 2 Principal Components to observe the varianc
 First, we need to install and load up the `multtest` package which comes with the `golub` data.
 
 ```{r, message = FALSE}
-# please install multtest prior to running the below code by running: install.packages("multtest")
 library(multtest)
 data(golub)
 
@@ -224,14 +234,14 @@ pca_plotdata <- pca_plotdata %>%
 
 # plot PC1 and PC2 with ggplot
 ggplot(pca_plotdata, aes(x = PC1, y = PC2, colour = samples)) +
-  geom_point()
+  geom_point() + theme_bw()
 
 # inspect the cumulative proportion of variance explained by each PC
 summary(pca)
 # FIXME adapt to ggplot
 
 # quickly plot the cumulative proportion of variance explained using base R's plotting function
-plot(summary(pca)$importance["Cumulative Proportion",])
+plot(summary(pca)$importance["Cumulative Proportion",]) #FIXME still working here
 ```
 
 

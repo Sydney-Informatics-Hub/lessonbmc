@@ -7,7 +7,7 @@ keypoints:
 - R has a large community of developers creating power tools for data and statistical analysis
 objectives: 
 - Introduction into using R for statistical analysis and visualisation
-questions: Using R for data and statistical analysis
+questions: R has most common (and uncommon) statistical tests implemented as libraries
 source: Rmd
 subtitle: Day 3
 teaching: 60
@@ -19,13 +19,14 @@ exercises: 25
 
 ## Data and statistical analysis
 
-We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now onto hypothesis testing and statistical analysis. 
+We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now we will use core R libraries to perform hypothesis testing and statistical analysis. 
 
 
-Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data. For statistical consultation, please contact Sydney Informatics Hub's statistics team. 
+Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data. If you'd like a statistical consultation for your specific project, please [contact Sydney Informatics Hub's statistics team](https://informatics.sydney.edu.au/help/) (select the "less than a day" of help option). 
 
-"To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of"
-  - Ronald Fisher 1938
+> *To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of*
+> - Ronald Fisher 1938
+
 
 
 The data for this session can be [downloaded from here](https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv). This is a selection of datapoints from a database of demographic and clinical measurements of Parkinson's patients and controls. More information about this dataset can be found at http://physionet.org/physiobank/database/gaitpdb/.
@@ -38,12 +39,14 @@ library(tidyverse)
 
 gait <- read.csv("data/gait_clean.csv", 
                  header = TRUE,
-                 row.names = 1)
+                 row.names = 1,
+                 na.strings = "NaN")
 
 # another way to read in this CSV file is to use the URL option in read.csv()
 gait <- read.csv("https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv", 
                  header = TRUE,
-                 row.names = 1)
+                 row.names = 1,
+                 na.strings = "NaN")
 
 # let's inspect the data
 summary(gait)
@@ -83,11 +86,11 @@ summary(gait)
 
 ## Correlation
 
-We're interested to see if there's any correlation between two clinical measures: UPDRS (Unified Parkinson's Disease Rating Scale) and TUAG (Timed Up And Go Test)
+Let's explore whether there is correlation between two clinical measures: UPDRS (Unified Parkinson's Disease Rating Scale) and TUAG (Timed Up And Go Test). We will use the Spearman rank correlation here (as opposed to the default method, "pearson"). Remember that the Spearman correlation is useful when there is a monotonic relationship between two continuous or ordinal variables, i.e. the two variables tend change together, but not necessarily at a constant rate (if the rate is expected to be constant, use Pearson). 
 
 
 ~~~
-cor(gait$UPDRS, gait$TUAG, method = "spearman")
+cor(gait$UPDRS, gait$TUAG, method = "spearman", use="pairwise.complete.obs")
 ~~~
 {: .language-r}
 
@@ -102,7 +105,7 @@ cor(gait$UPDRS, gait$TUAG, method = "spearman")
 
 ~~~
 ggplot(gait, aes(x = TUAG, y = UPDRS)) +
-  geom_point()
+  geom_point() + theme_bw()
 ~~~
 {: .language-r}
 
@@ -114,7 +117,7 @@ ggplot(gait, aes(x = TUAG, y = UPDRS)) +
 > > ## Solution
 > > 1. 
 > > ~~~
-> > cor(gait$UPDRS, gait$UPDRSM, method = "spearman")
+> > cor(gait$UPDRS, gait$UPDRSM, method = "spearman", use="pairwise.complete.obs")
 > > ~~~
 > > {: .output}
 > {: .solution}
@@ -133,7 +136,7 @@ gait_clin <- gait %>%
   select(HoehnYahr, UPDRS, UPDRSM, TUAG)
 
 # create a correlation matrix of the clinical markers using Spearman correlation
-correlations <- cor(gait_clin, method = "spearman")
+correlations <- cor(gait_clin, method = "spearman" ,use="pairwise.complete.obs")
 
 # create the correlation plot
 corrplot(correlations, method = "color")
@@ -145,8 +148,11 @@ corrplot(correlations, method = "color")
 
 ## Hypothesis testing 
 
+### 2 samples: t-test (parametric)
+Let's say we want to simply compare the mean of the `TUAG` score between `Group` by using the 2-sample t-test, which assumes that the variable in question is normally distributed in the two groups (although it is also relatively robust when this is not the case thanks to the Central Limit Theorem with sample sizes greater than 30).  
 
-Let's say we want to simply compare the `TUAG` score between `Group` by using the 2-sample t-test. Our null hypothesis is that there is no difference between the mean `TUAG` of the Parkinson's and Control participants. By default in R, the `t.test()` function will perform Welch's 2-sample t-test. We can plot this with a violin plot
+Our null hypothesis is that there is no difference between the mean `TUAG` of the Parkinson's and Control participants. By default in R, the `t.test()` function will perform Welch's 2-sample t-test. We can visualise the distribution of this data using a violin plot:
+
 
 ~~~
 t.test(TUAG ~ Group, data = gait)
@@ -175,22 +181,11 @@ mean in group CO mean in group PD
 ~~~
 # Let's visualise this data
 ggplot(gait, aes(y=TUAG, x = Group)) + 
-  geom_violin() 
+  geom_violin() + theme_bw()
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-10-unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="612" style="display: block; margin: auto;" />
-
-~~~
-# have a bit of fun and change the plot to the Wall St Journal's style
-library(ggthemes)
-ggplot(gait, aes(y=TUAG, x = Group,fill = Group)) + 
-  geom_violin() + 
-  theme_wsj()
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-10-unnamed-chunk-5-2.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="612" style="display: block; margin: auto;" />
 > ## Section quiz
 > 1. Perform the Welch 2-sample t-test for TUAG by gender? Generate violin plots of this.
 > {: .source}
@@ -198,14 +193,20 @@ ggplot(gait, aes(y=TUAG, x = Group,fill = Group)) +
 > > 1. 
 > > ~~~
 > > t.test(TUAG ~ Gender, data = gait)
-> > ggplot(gait, aes(y=TUAG, x = Group)) + geom_violin() 
+> > ggplot(gait, aes(y=TUAG, x = Gender, fill = Gender)) + geom_violin() +theme_bw()
 > > ~~~
 > > {: .output}
 > {: .solution}
 {: .challenge}
 
+### 2 samples: Wilcoxon-Mann-Whitney (non-parametric)
+The Mann–Whitney U test, also called the Mann–Whitney–Wilcoxon, Wilcoxon rank-sum test, or Wilcoxon–Mann–Whitney test - is sometimes preferred to the 2 sample t-test when the distribution cannot be assumed to be normal; for a discussion of whether this is appropriate see [here](http://thestatsgeek.com/2014/04/12/is-the-wilcoxon-mann-whitney-test-a-good-non-parametric-alternative-to-the-t-test/). 
 
-We can perform the non-parametric Wilcoxon-Mann-Whitney Test. Here the null hypothesis is that the distributions of the two groups are the same.
+Thankfully, performing it in R is easier than trying to figure out if it's appropriate...
+
+Here the null hypothesis is that the two independent samples were selected from populations having a similar distribution (if the samples are dependent, use the Wilcoxon signed-rank test, by specifying the arguement `paired=TRUE`).
+
+
 
 ~~~
 wilcox.test(TUAG ~ Group, data = gait)
@@ -224,11 +225,17 @@ alternative hypothesis: true location shift is not equal to 0
 ~~~
 {: .output}
 
+### More than 2 comparisons: ANOVA
 
-We can then perform an ANOVA using the `Study` grouping of patients. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups.
+If we want to explore the relationship between a variable and multiple factors, we can use an ANOVA. Many experiments you've told us about are amenable to this analysis technique, for example determining levels of which miRNA are distinct in cancer vs normal tissue (miRNA1, miRNA2, miRNA3, miRNA4 as factor 1, and cancer vs normal as factor 2); whether the concentration of a compound is distinct in WT vs mutant cell lines at different ages (age1, age2, age3) etc. 
+
+We can perform an ANOVA using the `Study` grouping of patients and the `Group`, i.e. whether they are controls or have a PD diagnosis. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups.
+
+We can also code for more complex designs, wehere we expect Height and Weight to not affect the mean TUAG score independently (i.e. code for an interaction term).
+
 
 ~~~
-aov_study <- aov(TUAG ~ Study, data = gait)
+aov_study <- aov(TUAG ~ Study + Group, data = gait) 
 summary(aov_study)
 ~~~
 {: .language-r}
@@ -236,24 +243,82 @@ summary(aov_study)
 
 
 ~~~
-            Df Sum Sq Mean Sq F value Pr(>F)
-Study        2   20.7  10.355   1.348  0.265
-Residuals   90  691.1   7.679               
+            Df Sum Sq Mean Sq F value   Pr(>F)    
+Study        2   20.7   10.35   1.512 0.226083    
+Group        1   81.6   81.60  11.915 0.000854 ***
+Residuals   89  609.5    6.85                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ~~~
 {: .output}
 
 
 
 ~~~
-ggplot(gait, aes(y=TUAG, x = Study)) + 
-  geom_violin() 
+ggplot(gait, aes(y=TUAG, x = Study)) +geom_violin() +theme_bw() + facet_grid(~Group)
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-10-unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="612" style="display: block; margin: auto;" />
 
+~~~
+aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait) 
+~~~
+{: .language-r}
 
-Let's assume that the we had sufficient evidence from the ANOVA to reject the null. We can then perform post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences
+
+
+~~~
+Error in eval(predvars, data, env): object 'Height..meters.' not found
+~~~
+{: .error}
+
+
+
+~~~
+ # show how to account for an interaction effect using * instead of + (and it's equivalent to + and :
+summary(aov_study2)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in summary(aov_study2): object 'aov_study2' not found
+~~~
+{: .error}
+
+
+
+~~~
+aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait) 
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in eval(predvars, data, env): object 'Height..meters.' not found
+~~~
+{: .error}
+
+
+
+~~~
+ # show how to account for an interaction effect using * instead of + (and it's equivalent to + and :
+summary(aov_study3)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in summary(aov_study3): object 'aov_study3' not found
+~~~
+{: .error}
+
+Let's assume that the we had sufficient evidence from the ANOVA to reject the null. We would then perform post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences:
+
 
 ~~~
 TukeyHSD(aov_study)
@@ -266,23 +331,29 @@ TukeyHSD(aov_study)
   Tukey multiple comparisons of means
     95% family-wise confidence level
 
-Fit: aov(formula = TUAG ~ Study, data = gait)
+Fit: aov(formula = TUAG ~ Study + Group, data = gait)
 
 $Study
-            diff        lwr      upr     p adj
-Ju-Ga  1.1373192 -0.5687206 2.843359 0.2557625
-Si-Ga  0.2999316 -1.3518231 1.951686 0.9020543
-Si-Ju -0.8373877 -2.5182543 0.843479 0.4638330
+            diff        lwr       upr     p adj
+Ju-Ga  1.1373192 -0.4741184 2.7487569 0.2176333
+Si-Ga  0.2999316 -1.2602312 1.8600943 0.8908680
+Si-Ju -0.8373877 -2.4250481 0.7502727 0.4231057
+
+$Group
+          diff       lwr      upr     p adj
+PD-CO 2.634398 0.8938373 4.374958 0.0034255
 ~~~
 {: .output}
 
+Many, *many* other post-hoc tests are available in R - if you know you'd like to use a specific test, chances R has a package that has it implemented. 
 
-R has a variety of statistical tests available. Google is your best friend here.
 
 
+
+***
 ## Linear regression
 
-Let's say that for the Parksinson's patients, we want to make a model to predict `UPDRS` score using the `UPDRSM` 
+Let's say that for the Parkinson's patients, we want to make a model to predict `UPDRS` score using the `UPDRSM` 
 
 ~~~
 gait_pd <- gait %>%
@@ -291,7 +362,7 @@ gait_pd <- gait %>%
 # Let's plot this first
 ggplot(gait_pd, aes(x = UPDRSM, y = UPDRS)) +
   geom_point() +
-  geom_smooth(method = 'lm', se = TRUE)
+  geom_smooth(method = 'lm', se = TRUE) + theme_bw()
 ~~~
 {: .language-r}
 
@@ -352,7 +423,7 @@ plot(gait_pd_slr)
 {: .language-r}
 
 
-What if we now include `Age` in our model
+What if we now include `Age` in our model?
 
 ~~~
 gait_pd_mlr <- lm(UPDRS ~ UPDRSM + Age, data = gait_pd)
@@ -414,8 +485,8 @@ We will use PCA and plot the first 2 Principal Components to observe the varianc
 
 First, we need to install and load up the `multtest` package which comes with the `golub` data.
 
+
 ~~~
-# please install multtest prior to running the below code by running: install.packages("multtest")
 library(multtest)
 data(golub)
 
@@ -451,7 +522,7 @@ pca_plotdata <- pca_plotdata %>%
 
 # plot PC1 and PC2 with ggplot
 ggplot(pca_plotdata, aes(x = PC1, y = PC2, colour = samples)) +
-  geom_point()
+  geom_point() + theme_bw()
 ~~~
 {: .language-r}
 
@@ -466,7 +537,7 @@ summary(pca)
 
 
 ~~~
-Importance of components%s:
+Importance of components:
                            PC1      PC2      PC3     PC4      PC5      PC6
 Standard deviation     21.7960 16.93278 14.28289 13.3825 11.48963 11.36482
 Proportion of Variance  0.1557  0.09398  0.06686  0.0587  0.04327  0.04233
@@ -501,8 +572,10 @@ Cumulative Proportion  1.00000 1.000e+00
 
 
 ~~~
+# FIXME adapt to ggplot
+
 # quickly plot the cumulative proportion of variance explained using base R's plotting function
-plot(summary(pca)$importance["Cumulative Proportion",])
+plot(summary(pca)$importance["Cumulative Proportion",]) #FIXME still working here
 ~~~
 {: .language-r}
 
@@ -530,5 +603,9 @@ heatmap.2(golub[ ,favgenes],
 
 <img src="../fig/rmd-10-unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="612" style="display: block; margin: auto;" />
 
+***
 
+## Further reading/links
+
+FIXME Likert scale...
 
