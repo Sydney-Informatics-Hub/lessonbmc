@@ -37,16 +37,14 @@ Please download this .csv file into your working directory's `data` folder.
 ```{r, warning=FALSE, message = FALSE}
 library(tidyverse)
 
-gait <- read.csv("data/gait_clean.csv", 
-                 header = TRUE,
-                 row.names = 1,
-                 na.strings = "NaN")
+gait <- read_csv("data/gait_clean.csv",  na  = "NaN")
 
 # another way to read in this CSV file is to use the URL option in read.csv()
-gait <- read.csv("https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv", 
-                 header = TRUE,
-                 row.names = 1,
-                 na.strings = "NaN")
+gait <- read_csv(url("https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv"), na = "NaN")
+
+# clean up the names to not have spaces
+names(gait) <- make.names(names(gait), unique=TRUE)
+
 
 # let's inspect the data
 summary(gait)
@@ -144,17 +142,16 @@ We can perform an ANOVA using the `Study` grouping of patients and the `Group`, 
 We can also code for more complex designs, wehere we expect Height and Weight to not affect the mean TUAG score independently (i.e. code for an interaction term).
 
 ```{r, warning=FALSE, message = FALSE}
+names(gait)
 aov_study <- aov(TUAG ~ Study + Group, data = gait) 
 summary(aov_study)
 ggplot(gait, aes(y=TUAG, x = Study)) +geom_violin() +theme_bw() + facet_grid(~Group)
 
 aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait) 
- # show how to account for an interaction effect using * instead of + (and it's equivalent to + and :
 summary(aov_study2)
 
 aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait) 
- # show how to account for an interaction effect using * instead of + (and it's equivalent to + and :
-summary(aov_study3)
+#ummary(aov_study3)
 
 
 ```

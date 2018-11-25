@@ -37,16 +37,14 @@ Please download this .csv file into your working directory's `data` folder.
 ~~~
 library(tidyverse)
 
-gait <- read.csv("data/gait_clean.csv", 
-                 header = TRUE,
-                 row.names = 1,
-                 na.strings = "NaN")
+gait <- read_csv("data/gait_clean.csv",  na  = "NaN")
 
 # another way to read in this CSV file is to use the URL option in read.csv()
-gait <- read.csv("https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv", 
-                 header = TRUE,
-                 row.names = 1,
-                 na.strings = "NaN")
+gait <- read_csv(url("https://raw.githubusercontent.com/Sydney-Informatics-Hub/lessonbmc/gh-pages/_episodes_rmd/data/gait_clean.csv"), na = "NaN")
+
+# clean up the names to not have spaces
+names(gait) <- make.names(names(gait), unique=TRUE)
+
 
 # let's inspect the data
 summary(gait)
@@ -56,30 +54,38 @@ summary(gait)
 
 
 ~~~
-       ID     Study   Group      Subjnum         Gender        Age      
- GaCo04 : 1   Ga:31   CO:10   Min.   : 1.00   female:35   Min.   :36.0  
- GaCo06 : 1   Ju:29   PD:83   1st Qu.:11.00   male  :58   1st Qu.:61.0  
- GaCo10 : 1   Si:33           Median :17.00               Median :67.0  
- GaCo11 : 1                   Mean   :18.63               Mean   :66.1  
- GaCo12 : 1                   3rd Qu.:27.00               3rd Qu.:71.0  
- GaCo13 : 1                   Max.   :40.00               Max.   :86.0  
- (Other):87                                                             
-     Height          Weight         HoehnYahr       UPDRS   
- Min.   :1.500   Min.   : 47.00   Min.   :0.0   Min.   : 0  
- 1st Qu.:1.600   1st Qu.: 65.00   1st Qu.:2.0   1st Qu.:19  
- Median :1.680   Median : 72.00   Median :2.0   Median :27  
- Mean   :1.674   Mean   : 72.04   Mean   :2.0   Mean   :28  
- 3rd Qu.:1.730   3rd Qu.: 80.00   3rd Qu.:2.5   3rd Qu.:38  
- Max.   :1.860   Max.   :101.00   Max.   :3.0   Max.   :70  
-                                                            
-     UPDRSM           TUAG          Speed_01    
- Min.   : 0.00   Min.   : 7.16   Min.   :0.413  
- 1st Qu.:12.00   1st Qu.: 9.70   1st Qu.:0.935  
- Median :17.00   Median :10.83   Median :1.107  
- Mean   :17.29   Mean   :11.28   Mean   :1.073  
- 3rd Qu.:24.00   3rd Qu.:12.67   3rd Qu.:1.212  
- Max.   :44.00   Max.   :25.25   Max.   :1.515  
-                                                
+      ID               Study              Group              Subjnum     
+ Length:166         Length:166         Length:166         Min.   : 1.00  
+ Class :character   Class :character   Class :character   1st Qu.: 8.25  
+ Mode  :character   Mode  :character   Mode  :character   Median :16.00  
+                                                          Mean   :16.47  
+                                                          3rd Qu.:23.75  
+                                                          Max.   :40.00  
+                                                                         
+    Gender               Age        Height..meters.    Weight..kg.    
+ Length:166         Min.   :36.00   Min.   :  1.450   Min.   : 47.00  
+ Class :character   1st Qu.:59.00   1st Qu.:  1.655   1st Qu.: 64.00  
+ Mode  :character   Median :65.00   Median :  1.740   Median : 72.00  
+                    Mean   :65.14   Mean   : 57.634   Mean   : 72.56  
+                    3rd Qu.:71.00   3rd Qu.:160.000   3rd Qu.: 80.00  
+                    Max.   :86.00   Max.   :185.000   Max.   :105.00  
+                                    NA's   :3         NA's   :3       
+   HoehnYahr         UPDRS           UPDRSM           TUAG      
+ Min.   :0.000   Min.   : 0.00   Min.   : 0.00   Min.   : 6.23  
+ 1st Qu.:2.000   1st Qu.: 1.00   1st Qu.: 1.00   1st Qu.: 8.94  
+ Median :2.000   Median :24.00   Median :14.00   Median :10.32  
+ Mean   :1.892   Mean   :21.47   Mean   :13.18   Mean   :10.92  
+ 3rd Qu.:2.500   3rd Qu.:33.00   3rd Qu.:21.00   3rd Qu.:11.99  
+ Max.   :3.000   Max.   :70.00   Max.   :44.00   Max.   :36.34  
+ NA's   :55      NA's   :31      NA's   :31      NA's   :13     
+ Speed_01..m.sec.    Speed_10     
+ Min.   :0.360    Min.   :0.2280  
+ 1st Qu.:1.013    1st Qu.:0.7930  
+ Median :1.144    Median :0.9550  
+ Mean   :1.125    Mean   :0.9675  
+ 3rd Qu.:1.261    3rd Qu.:1.1890  
+ Max.   :1.542    Max.   :1.5320  
+ NA's   :1        NA's   :146     
 ~~~
 {: .output}
 
@@ -97,7 +103,7 @@ cor(gait$UPDRS, gait$TUAG, method = "spearman", use="pairwise.complete.obs")
 
 
 ~~~
-[1] 0.4321055
+[1] 0.5136702
 ~~~
 {: .output}
 
@@ -166,13 +172,13 @@ t.test(TUAG ~ Group, data = gait)
 	Welch Two Sample t-test
 
 data:  TUAG by Group
-t = -6.9918, df = 27.164, p-value = 1.572e-07
+t = -5.9645, df = 125.22, p-value = 2.339e-08
 alternative hypothesis: true difference in means is not equal to 0
 95 percent confidence interval:
- -4.075476 -2.226572
+ -3.680347 -1.846478
 sample estimates:
 mean in group CO mean in group PD 
-         8.46500         11.61602 
+        9.292698        12.056111 
 ~~~
 {: .output}
 
@@ -220,7 +226,7 @@ wilcox.test(TUAG ~ Group, data = gait)
 	Wilcoxon rank sum test with continuity correction
 
 data:  TUAG by Group
-W = 80, p-value = 3.345e-05
+W = 1122, p-value = 2.172e-10
 alternative hypothesis: true location shift is not equal to 0
 ~~~
 {: .output}
@@ -235,6 +241,24 @@ We can also code for more complex designs, wehere we expect Height and Weight to
 
 
 ~~~
+names(gait)
+~~~
+{: .language-r}
+
+
+
+~~~
+ [1] "ID"               "Study"            "Group"           
+ [4] "Subjnum"          "Gender"           "Age"             
+ [7] "Height..meters."  "Weight..kg."      "HoehnYahr"       
+[10] "UPDRS"            "UPDRSM"           "TUAG"            
+[13] "Speed_01..m.sec." "Speed_10"        
+~~~
+{: .output}
+
+
+
+~~~
 aov_study <- aov(TUAG ~ Study + Group, data = gait) 
 summary(aov_study)
 ~~~
@@ -243,12 +267,13 @@ summary(aov_study)
 
 
 ~~~
-            Df Sum Sq Mean Sq F value   Pr(>F)    
-Study        2   20.7   10.35   1.512 0.226083    
-Group        1   81.6   81.60  11.915 0.000854 ***
-Residuals   89  609.5    6.85                     
+             Df Sum Sq Mean Sq F value   Pr(>F)    
+Study         2   63.6   31.82   3.108   0.0476 *  
+Group         1  248.2  248.25  24.248 2.22e-06 ***
+Residuals   149 1525.4   10.24                     
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+13 observations deleted due to missingness
 ~~~
 {: .output}
 
@@ -263,20 +288,6 @@ ggplot(gait, aes(y=TUAG, x = Study)) +geom_violin() +theme_bw() + facet_grid(~Gr
 
 ~~~
 aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait) 
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in eval(predvars, data, env): object 'Height..meters.' not found
-~~~
-{: .error}
-
-
-
-~~~
- # show how to account for an interaction effect using * instead of + (and it's equivalent to + and :
 summary(aov_study2)
 ~~~
 {: .language-r}
@@ -284,38 +295,25 @@ summary(aov_study2)
 
 
 ~~~
-Error in summary(aov_study2): object 'aov_study2' not found
+                             Df Sum Sq Mean Sq F value   Pr(>F)    
+Age                           1  191.3  191.28  19.354 2.12e-05 ***
+Height..meters.               1    8.3    8.32   0.842    0.360    
+Weight..kg.                   1    9.4    9.38   0.949    0.332    
+Height..meters.:Weight..kg.   1    8.3    8.33   0.843    0.360    
+Residuals                   142 1403.4    9.88                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+19 observations deleted due to missingness
 ~~~
-{: .error}
+{: .output}
 
 
 
 ~~~
 aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait) 
+#ummary(aov_study3)
 ~~~
 {: .language-r}
-
-
-
-~~~
-Error in eval(predvars, data, env): object 'Height..meters.' not found
-~~~
-{: .error}
-
-
-
-~~~
- # show how to account for an interaction effect using * instead of + (and it's equivalent to + and :
-summary(aov_study3)
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in summary(aov_study3): object 'aov_study3' not found
-~~~
-{: .error}
 
 Let's assume that the we had sufficient evidence from the ANOVA to reject the null. We would then perform post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences:
 
@@ -334,14 +332,14 @@ TukeyHSD(aov_study)
 Fit: aov(formula = TUAG ~ Study + Group, data = gait)
 
 $Study
-            diff        lwr       upr     p adj
-Ju-Ga  1.1373192 -0.4741184 2.7487569 0.2176333
-Si-Ga  0.2999316 -1.2602312 1.8600943 0.8908680
-Si-Ju -0.8373877 -2.4250481 0.7502727 0.4231057
+            diff       lwr         upr     p adj
+Ju-Ga -1.2964508 -2.919205  0.32630303 0.1447355
+Si-Ga -1.6172115 -3.186125 -0.04829783 0.0417015
+Si-Ju -0.3207607 -1.732619  1.09109713 0.8528107
 
 $Group
-          diff       lwr      upr     p adj
-PD-CO 2.634398 0.8938373 4.374958 0.0034255
+          diff      lwr      upr p adj
+PD-CO 2.553788 1.515188 3.592388 3e-06
 ~~~
 {: .output}
 
@@ -385,18 +383,19 @@ lm(formula = UPDRS ~ UPDRSM, data = gait_pd)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--9.0197 -4.2161 -0.5118  2.8493 16.6033 
+-9.2820 -4.2972 -0.6608  3.0513 16.3392 
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  4.74208    1.57227   3.016  0.00342 ** 
-UPDRSM       1.37698    0.07588  18.147  < 2e-16 ***
+(Intercept)  4.97901    1.53207    3.25  0.00163 ** 
+UPDRSM       1.37879    0.07378   18.69  < 2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 5.294 on 81 degrees of freedom
-Multiple R-squared:  0.8026,	Adjusted R-squared:  0.8001 
-F-statistic: 329.3 on 1 and 81 DF,  p-value: < 2.2e-16
+Residual standard error: 5.359 on 89 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.7969,	Adjusted R-squared:  0.7946 
+F-statistic: 349.2 on 1 and 89 DF,  p-value: < 2.2e-16
 ~~~
 {: .output}
 
@@ -411,7 +410,7 @@ gait_pd_slr$coefficients
 
 ~~~
 (Intercept)      UPDRSM 
-   4.742081    1.376976 
+   4.979012    1.378788 
 ~~~
 {: .output}
 
@@ -440,19 +439,20 @@ lm(formula = UPDRS ~ UPDRSM + Age, data = gait_pd)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--9.5340 -4.2028 -0.5694  2.6783 16.5024 
+-9.8453 -4.1916 -0.5681  2.6996 16.2686 
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)    
-(Intercept) -0.29331    4.79490  -0.061    0.951    
-UPDRSM       1.39411    0.07732  18.030   <2e-16 ***
-Age          0.07175    0.06456   1.111    0.270    
+(Intercept) -0.97473    4.48919  -0.217    0.829    
+UPDRSM       1.39551    0.07433  18.775   <2e-16 ***
+Age          0.08490    0.06022   1.410    0.162    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 5.286 on 80 degrees of freedom
-Multiple R-squared:  0.8056,	Adjusted R-squared:  0.8007 
-F-statistic: 165.7 on 2 and 80 DF,  p-value: < 2.2e-16
+Residual standard error: 5.33 on 88 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.8014,	Adjusted R-squared:  0.7969 
+F-statistic: 177.5 on 2 and 88 DF,  p-value: < 2.2e-16
 ~~~
 {: .output}
 
@@ -467,7 +467,7 @@ gait_pd_mlr$coefficients
 
 ~~~
 (Intercept)      UPDRSM         Age 
- -0.2933059   1.3941070   0.0717548 
+-0.97473294  1.39551286  0.08490291 
 ~~~
 {: .output}
 
