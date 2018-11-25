@@ -572,14 +572,20 @@ Cumulative Proportion  1.00000 1.000e+00
 
 
 ~~~
-# FIXME adapt to ggplot
-
 # quickly plot the cumulative proportion of variance explained using base R's plotting function
-plot(summary(pca)$importance["Cumulative Proportion",]) #FIXME still working here
+plot(summary(pca)$importance["Cumulative Proportion",])
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-10-unnamed-chunk-12-2.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="612" style="display: block; margin: auto;" />
+
+~~~
+# and what proportion is explained by each component
+plot(summary(pca)$importance["Proportion of Variance",])
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-10-unnamed-chunk-12-3.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="612" style="display: block; margin: auto;" />
 
 
 ## Clustering and heatmap
@@ -607,5 +613,8 @@ heatmap.2(golub[ ,favgenes],
 
 ## Further reading/links
 
-FIXME Likert scale...
+Several of you have asked about analysing so-called Likert data, i.e situations when you are trying to measure respondents attitudes to a particular question or statement (i.e. "very unsatisfied", "unsatisifed", "neither unsatisifed nor satisfied", "satisfied", "very satisfied") etc.
+
+While we don't have the time to go into details of the complexities of analysing this type of data today, they can be analysed in R. Some ideas on how to do this can be found  [here](https://www.st-andrews.ac.uk/media/capod/students/mathssupport/OrdinalexampleR.pdf), [here](https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/), and in [the likert package](https://github.com/jbryer/likert).
+
 
