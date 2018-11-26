@@ -151,7 +151,7 @@ aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:W
 summary(aov_study2)
 
 aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait) 
-#ummary(aov_study3)
+summary(aov_study3)
 
 
 ```
