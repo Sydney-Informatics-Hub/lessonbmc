@@ -96,7 +96,7 @@ corrplot(correlations, method = "color")
 ## Hypothesis testing 
 
 ### 2 samples: t-test (parametric)
-Let's say we want to simply compare the mean of the `TUAG` score between `Group` by using the 2-sample t-test, which assumes that the variable in question is normally distributed in the two groups (although it is also relatively robust when this is not the case thanks to the Central Limit Theorem with sample sizes greater than 30).  
+Let's say we want to simply compare the mean of the `TUAG` score between `Group` by using the 2-sample t-test This assumes that the variable in question is normally distributed in the two groups (although it is also relatively robust when this is not the case thanks to the Central Limit Theorem with sample sizes greater than 30).  
 
 Our null hypothesis is that there is no difference between the mean `TUAG` of the Parkinson's and Control participants. By default in R, the `t.test()` function will perform Welch's 2-sample t-test. We can visualise the distribution of this data using a violin plot:
 
@@ -137,32 +137,55 @@ wilcox.test(TUAG ~ Group, data = gait)
 
 If we want to explore the relationship between a variable and multiple factors, we can use an ANOVA. Many experiments you've told us about are amenable to this analysis technique, for example determining levels of which miRNA are distinct in cancer vs normal tissue (miRNA1, miRNA2, miRNA3, miRNA4 as factor 1, and cancer vs normal as factor 2); whether the concentration of a compound is distinct in WT vs mutant cell lines at different ages (age1, age2, age3) etc. 
 
-We can perform an ANOVA using the `Study` grouping of patients and the `Group`, i.e. whether they are controls or have a PD diagnosis. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups.
 
-We can also code for more complex designs, wehere we expect Height and Weight to not affect the mean TUAG score independently (i.e. code for an interaction term).
+#### One-way ANOVA
+
+We can perform an ANOVA using the `Study` grouping of patients and test the null hypothesis that the mean `TUAG` is the same for all groups
+
+```{r, warning=FALSE, message = FALSE}
+aov_study <- aov(TUAG ~ Study , data = gait) 
+summary(aov_study)
+ggplot(gait, aes(y=TUAG, x = Study)) + 
+  geom_violin() + 
+  theme_bw() 
+```
+
+
+#### Two-way ANOVA
+
+We can perform an ANOVA using the `Study` grouping of patients and the `Group`, i.e. whether they are controls or have a PD diagnosis. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups. 
+
+```{r, warning=FALSE, message = FALSE}
+aov_study <- aov(TUAG ~ Study + Group, data = gait) 
+summary(aov_study)
+ggplot(gait, aes(y=TUAG, x = Study)) + 
+  geom_violin() + 
+  theme_bw() + 
+  facet_grid(~Group)
+```
+
+
+We can also code for more complex designs, where we expect `Height` and `Weight` to not affect the mean `TUAG` score independently (i.e. code for an interaction term).
+
 
 ```{r, warning=FALSE, message = FALSE}
 names(gait)
-aov_study <- aov(TUAG ~ Study + Group, data = gait) 
-summary(aov_study)
-ggplot(gait, aes(y=TUAG, x = Study)) +geom_violin() +theme_bw() + facet_grid(~Group)
 
 aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait) 
 summary(aov_study2)
 
 aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait) 
-#ummary(aov_study3)
-
-
+summary(aov_study3)
 ```
 
 Let's assume that the we had sufficient evidence from the ANOVA to reject the null. We would then perform post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences:
 
 ```{r, warning=FALSE, message = FALSE}
+aov_study <- aov(TUAG ~ Study , data = gait) 
 TukeyHSD(aov_study)
 ```
 
-Many, *many* other post-hoc tests are available in R - if you know you'd like to use a specific test, chances R has a package that has it implemented. 
+Many, *many* other post-hoc tests are available in R - if you know you'd like to use a specific test, chances are that R already has a package implemented. 
 
 
 
@@ -178,7 +201,8 @@ gait_pd <- gait %>%
 # Let's plot this first
 ggplot(gait_pd, aes(x = UPDRSM, y = UPDRS)) +
   geom_point() +
-  geom_smooth(method = 'lm', se = TRUE) + theme_bw()
+  geom_smooth(method = 'lm', se = TRUE) + 
+  theme_bw()
 ```
 
 Fit a linear regression predicting UPDRS using UPDRSM, and look at the summary of the results
@@ -231,17 +255,17 @@ pca_plotdata <- pca_plotdata %>%
 
 # plot PC1 and PC2 with ggplot
 ggplot(pca_plotdata, aes(x = PC1, y = PC2, colour = samples)) +
-  geom_point() + theme_bw()
+  geom_point() + 
+  theme_bw()
 
 # inspect the cumulative proportion of variance explained by each PC
 summary(pca)
 
-# quickly plot the cumulative proportion of variance explained using base R's plotting function
-plot(summary(pca)$importance["Cumulative Proportion",])
+# quickly plot the proportion of variance explained by each component using base R's plotting function
+plot(summary(pca)$importance["Proportion of Variance", ])
 
-# and what proportion is explained by each component
-plot(summary(pca)$importance["Proportion of Variance",])
-
+# and now, plot the cumulative proportion of variance explained 
+plot(summary(pca)$importance["Cumulative Proportion", ])
 ```
 
 
