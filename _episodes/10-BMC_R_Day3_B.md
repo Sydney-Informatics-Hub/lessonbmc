@@ -14,8 +14,14 @@ teaching: 60
 exercises: 25
 ---
 
-
-
+Please run the following code:
+```
+install.packages(c("corrplot", "gplots"))
+# install bioconductor and the multtest package
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("multtest", version = "3.8")
+```
 
 ## Data and statistical analysis
 
