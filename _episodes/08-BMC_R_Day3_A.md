@@ -330,12 +330,6 @@ Warning: Removed 2 rows containing non-finite values (stat_count).
 
 <img src="../fig/rmd-08-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="612" style="display: block; margin: auto;" />
 
-  
-## Adding legends and axis labels to plots
-
-
-
-We ca 
 
 
 # Transformations and statistics

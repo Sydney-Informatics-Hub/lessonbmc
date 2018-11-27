@@ -1,6 +1,6 @@
 ---
 title: "Data and statistical analysis"
-author: "Nicholas Ho, Darya Vanichkina, Richard Morris, Maryam Montazerolghaem"
+author: "Nicholas Ho, Darya Vanichkina"
 keypoints:
 - R has a large community of developers creating power tools for data and statistical analysis
 objectives:

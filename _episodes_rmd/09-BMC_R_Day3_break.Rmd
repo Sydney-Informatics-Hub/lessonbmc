@@ -1,11 +1,11 @@
 ---
 title: "Break"
-author: "Nicholas Ho, Richard Morris, Darya Vanichkina"
+author: "Nicholas Ho, Darya Vanichkina"
 keypoints:
 - Coffee is good
 objectives:
-- Rest
-questions: FIXME
+- Rest and install packages
+questions: 
 source: Rmd
 teaching: 15
 exercises: 0

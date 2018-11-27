@@ -213,12 +213,6 @@ Lets try to use `mutate()`  to do this...
 autism.data %>% mutate(NewCol = paste(gender, Class.ASD, sep = "_")) %>% ggplot(aes(x = age, fill = NewCol )) + geom_bar() + scale_fill_brewer(palette = "Set2") + theme_minimal()
 ```
 
-  
-## Adding legends and axis labels to plots
-
-
-
-We ca 
 
 
 # Transformations and statistics
