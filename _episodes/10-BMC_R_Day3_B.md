@@ -14,8 +14,14 @@ teaching: 60
 exercises: 25
 ---
 
-
-
+Please run the following code:
+```
+install.packages(c("corrplot", "gplots"))
+# install bioconductor and the multtest package
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("multtest", version = "3.8")
+```
 
 ## Data and statistical analysis
 
@@ -155,7 +161,7 @@ corrplot(correlations, method = "color")
 ## Hypothesis testing 
 
 ### 2 samples: t-test (parametric)
-Let's say we want to simply compare the mean of the `TUAG` score between `Group` by using the 2-sample t-test, which assumes that the variable in question is normally distributed in the two groups (although it is also relatively robust when this is not the case thanks to the Central Limit Theorem with sample sizes greater than 30).  
+Let's say we want to simply compare the mean of the `TUAG` score between `Group` by using the 2-sample t-test This assumes that the variable in question is normally distributed in the two groups (although it is also relatively robust when this is not the case thanks to the Central Limit Theorem with sample sizes greater than 30).  
 
 Our null hypothesis is that there is no difference between the mean `TUAG` of the Parkinson's and Control participants. By default in R, the `t.test()` function will perform Welch's 2-sample t-test. We can visualise the distribution of this data using a violin plot:
 
@@ -235,27 +241,45 @@ alternative hypothesis: true location shift is not equal to 0
 
 If we want to explore the relationship between a variable and multiple factors, we can use an ANOVA. Many experiments you've told us about are amenable to this analysis technique, for example determining levels of which miRNA are distinct in cancer vs normal tissue (miRNA1, miRNA2, miRNA3, miRNA4 as factor 1, and cancer vs normal as factor 2); whether the concentration of a compound is distinct in WT vs mutant cell lines at different ages (age1, age2, age3) etc. 
 
-We can perform an ANOVA using the `Study` grouping of patients and the `Group`, i.e. whether they are controls or have a PD diagnosis. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups.
 
-We can also code for more complex designs, wehere we expect Height and Weight to not affect the mean TUAG score independently (i.e. code for an interaction term).
+#### One-way ANOVA
+
+We can perform an ANOVA using the `Study` grouping of patients and test the null hypothesis that the mean `TUAG` is the same for all groups
 
 
 ~~~
-names(gait)
+aov_study <- aov(TUAG ~ Study , data = gait) 
+summary(aov_study)
 ~~~
 {: .language-r}
 
 
 
 ~~~
- [1] "ID"               "Study"            "Group"           
- [4] "Subjnum"          "Gender"           "Age"             
- [7] "Height..meters."  "Weight..kg."      "HoehnYahr"       
-[10] "UPDRS"            "UPDRSM"           "TUAG"            
-[13] "Speed_01..m.sec." "Speed_10"        
+             Df Sum Sq Mean Sq F value Pr(>F)  
+Study         2   63.6   31.82   2.691 0.0711 .
+Residuals   150 1773.7   11.82                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+13 observations deleted due to missingness
 ~~~
 {: .output}
 
+
+
+~~~
+ggplot(gait, aes(y=TUAG, x = Study)) + 
+  geom_violin() + 
+  theme_bw() 
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-10-unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="612" style="display: block; margin: auto;" />
+
+
+#### Two-way ANOVA
+
+We can perform an ANOVA using the `Study` grouping of patients and the `Group`, i.e. whether they are controls or have a PD diagnosis. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups. 
 
 
 ~~~
@@ -280,11 +304,37 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 
 ~~~
-ggplot(gait, aes(y=TUAG, x = Study)) +geom_violin() +theme_bw() + facet_grid(~Group)
+ggplot(gait, aes(y=TUAG, x = Study)) + 
+  geom_violin() + 
+  theme_bw() + 
+  facet_grid(~Group)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-10-unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-10-unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="612" style="display: block; margin: auto;" />
+
+
+We can also code for more complex designs, where we expect `Height` and `Weight` to not affect the mean `TUAG` score independently (i.e. code for an interaction term).
+
+
+
+~~~
+names(gait)
+~~~
+{: .language-r}
+
+
+
+~~~
+ [1] "ID"               "Study"            "Group"           
+ [4] "Subjnum"          "Gender"           "Age"             
+ [7] "Height..meters."  "Weight..kg."      "HoehnYahr"       
+[10] "UPDRS"            "UPDRSM"           "TUAG"            
+[13] "Speed_01..m.sec." "Speed_10"        
+~~~
+{: .output}
+
+
 
 ~~~
 aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait) 
@@ -311,14 +361,30 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ~~~
 aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait) 
-#ummary(aov_study3)
+summary(aov_study3)
 ~~~
 {: .language-r}
+
+
+
+~~~
+                             Df Sum Sq Mean Sq F value   Pr(>F)    
+Age                           1  191.3  191.28  19.354 2.12e-05 ***
+Height..meters.               1    8.3    8.32   0.842    0.360    
+Weight..kg.                   1    9.4    9.38   0.949    0.332    
+Height..meters.:Weight..kg.   1    8.3    8.33   0.843    0.360    
+Residuals                   142 1403.4    9.88                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+19 observations deleted due to missingness
+~~~
+{: .output}
 
 Let's assume that the we had sufficient evidence from the ANOVA to reject the null. We would then perform post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences:
 
 
 ~~~
+aov_study <- aov(TUAG ~ Study , data = gait) 
 TukeyHSD(aov_study)
 ~~~
 {: .language-r}
@@ -329,21 +395,17 @@ TukeyHSD(aov_study)
   Tukey multiple comparisons of means
     95% family-wise confidence level
 
-Fit: aov(formula = TUAG ~ Study + Group, data = gait)
+Fit: aov(formula = TUAG ~ Study, data = gait)
 
 $Study
-            diff       lwr         upr     p adj
-Ju-Ga -1.2964508 -2.919205  0.32630303 0.1447355
-Si-Ga -1.6172115 -3.186125 -0.04829783 0.0417015
-Si-Ju -0.3207607 -1.732619  1.09109713 0.8528107
-
-$Group
-          diff      lwr      upr p adj
-PD-CO 2.553788 1.515188 3.592388 3e-06
+            diff       lwr        upr     p adj
+Ju-Ga -1.2964508 -3.040312 0.44741045 0.1867481
+Si-Ga -1.6172115 -3.303214 0.06879145 0.0631204
+Si-Ju -0.3207607 -1.837987 1.19646521 0.8711995
 ~~~
 {: .output}
 
-Many, *many* other post-hoc tests are available in R - if you know you'd like to use a specific test, chances R has a package that has it implemented. 
+Many, *many* other post-hoc tests are available in R - if you know you'd like to use a specific test, chances are that R already has a package implemented. 
 
 
 
@@ -360,11 +422,12 @@ gait_pd <- gait %>%
 # Let's plot this first
 ggplot(gait_pd, aes(x = UPDRSM, y = UPDRS)) +
   geom_point() +
-  geom_smooth(method = 'lm', se = TRUE) + theme_bw()
+  geom_smooth(method = 'lm', se = TRUE) + 
+  theme_bw()
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-10-unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-10-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="612" style="display: block; margin: auto;" />
 
 Fit a linear regression predicting UPDRS using UPDRSM, and look at the summary of the results
 
@@ -522,11 +585,12 @@ pca_plotdata <- pca_plotdata %>%
 
 # plot PC1 and PC2 with ggplot
 ggplot(pca_plotdata, aes(x = PC1, y = PC2, colour = samples)) +
-  geom_point() + theme_bw()
+  geom_point() + 
+  theme_bw()
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-10-unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-10-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="612" style="display: block; margin: auto;" />
 
 ~~~
 # inspect the cumulative proportion of variance explained by each PC
@@ -537,7 +601,7 @@ summary(pca)
 
 
 ~~~
-Importance of components:
+Importance of components%s:
                            PC1      PC2      PC3     PC4      PC5      PC6
 Standard deviation     21.7960 16.93278 14.28289 13.3825 11.48963 11.36482
 Proportion of Variance  0.1557  0.09398  0.06686  0.0587  0.04327  0.04233
@@ -572,20 +636,20 @@ Cumulative Proportion  1.00000 1.000e+00
 
 
 ~~~
-# quickly plot the cumulative proportion of variance explained using base R's plotting function
-plot(summary(pca)$importance["Cumulative Proportion",])
+# quickly plot the proportion of variance explained by each component using base R's plotting function
+plot(summary(pca)$importance["Proportion of Variance", ])
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-10-unnamed-chunk-12-2.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-10-unnamed-chunk-14-2.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="612" style="display: block; margin: auto;" />
 
 ~~~
-# and what proportion is explained by each component
-plot(summary(pca)$importance["Proportion of Variance",])
+# and now, plot the cumulative proportion of variance explained 
+plot(summary(pca)$importance["Cumulative Proportion", ])
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-10-unnamed-chunk-12-3.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-10-unnamed-chunk-14-3.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="612" style="display: block; margin: auto;" />
 
 
 ## Clustering and heatmap
@@ -607,7 +671,7 @@ heatmap.2(golub[ ,favgenes],
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-10-unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-10-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" width="612" style="display: block; margin: auto;" />
 
 ***
 

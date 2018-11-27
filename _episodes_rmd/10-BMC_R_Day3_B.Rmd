@@ -3,7 +3,7 @@ title: "Data and statistical analysis"
 author: "Nicholas Ho, Darya Vanichkina, Richard Morris, Maryam Montazerolghaem"
 keypoints:
 - R has a large community of developers creating power tools for data and statistical analysis
-objectives: 
+objectives:
 - Introduction into using R for statistical analysis and visualisation
 questions: R has most common (and uncommon) statistical tests implemented as libraries
 source: Rmd
@@ -20,10 +20,10 @@ knitr_fig_path("10-")
 
 ## Data and statistical analysis
 
-We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now we will use core R libraries to perform hypothesis testing and statistical analysis. 
+We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now we will use core R libraries to perform hypothesis testing and statistical analysis.
 
 
-Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data. If you'd like a statistical consultation for your specific project, please [contact Sydney Informatics Hub's statistics team](https://informatics.sydney.edu.au/help/) (select the "less than a day" of help option). 
+Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data. If you'd like a statistical consultation for your specific project, please [contact Sydney Informatics Hub's statistics team](https://informatics.sydney.edu.au/help/) (select the "less than a day" of help option).
 
 > *To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of*
 > - Ronald Fisher 1938
@@ -53,7 +53,7 @@ summary(gait)
 
 ## Correlation
 
-Let's explore whether there is correlation between two clinical measures: UPDRS (Unified Parkinson's Disease Rating Scale) and TUAG (Timed Up And Go Test). We will use the Spearman rank correlation here (as opposed to the default method, "pearson"). Remember that the Spearman correlation is useful when there is a monotonic relationship between two continuous or ordinal variables, i.e. the two variables tend change together, but not necessarily at a constant rate (if the rate is expected to be constant, use Pearson). 
+Let's explore whether there is correlation between two clinical measures: UPDRS (Unified Parkinson's Disease Rating Scale) and TUAG (Timed Up And Go Test). We will use the Spearman rank correlation here (as opposed to the default method, "pearson"). Remember that the Spearman correlation is useful when there is a monotonic relationship between two continuous or ordinal variables, i.e. the two variables tend change together, but not necessarily at a constant rate (if the rate is expected to be constant, use Pearson).
 
 ```{r, warning=FALSE, message = FALSE}
 cor(gait$UPDRS, gait$TUAG, method = "spearman", use="pairwise.complete.obs")
@@ -63,10 +63,10 @@ ggplot(gait, aes(x = TUAG, y = UPDRS)) +
 ```
 
 > ## Section quiz
-> 1. What's the Spearman's rank correlation coefficient between UPDRS and UPDRSM? 
+> 1. What's the Spearman's rank correlation coefficient between UPDRS and UPDRSM?
 > {: .source}
 > > ## Solution
-> > 1. 
+> > 1.
 > > ~~~
 > > cor(gait$UPDRS, gait$UPDRSM, method = "spearman", use="pairwise.complete.obs")
 > > ~~~
@@ -93,18 +93,18 @@ corrplot(correlations, method = "color")
 ```
 
 
-## Hypothesis testing 
+## Hypothesis testing
 
 ### 2 samples: t-test (parametric)
-Let's say we want to simply compare the mean of the `TUAG` score between `Group` by using the 2-sample t-test, which assumes that the variable in question is normally distributed in the two groups (although it is also relatively robust when this is not the case thanks to the Central Limit Theorem with sample sizes greater than 30).  
+Let's say we want to simply compare the mean of the `TUAG` score between `Group` by using the 2-sample t-test This assumes that the variable in question is normally distributed in the two groups (although it is also relatively robust when this is not the case thanks to the Central Limit Theorem with sample sizes greater than 30).  
 
 Our null hypothesis is that there is no difference between the mean `TUAG` of the Parkinson's and Control participants. By default in R, the `t.test()` function will perform Welch's 2-sample t-test. We can visualise the distribution of this data using a violin plot:
 
 ```{r, warning=FALSE, message = FALSE}
 t.test(TUAG ~ Group, data = gait)
-  
+
 # Let's visualise this data
-ggplot(gait, aes(y=TUAG, x = Group)) + 
+ggplot(gait, aes(y=TUAG, x = Group)) +
   geom_violin() + theme_bw()
 
 ```
@@ -112,7 +112,7 @@ ggplot(gait, aes(y=TUAG, x = Group)) +
 > 1. Perform the Welch 2-sample t-test for TUAG by gender? Generate violin plots of this.
 > {: .source}
 > > ## Solution
-> > 1. 
+> > 1.
 > > ~~~
 > > t.test(TUAG ~ Gender, data = gait)
 > > ggplot(gait, aes(y=TUAG, x = Gender, fill = Gender)) + geom_violin() +theme_bw()
@@ -122,7 +122,7 @@ ggplot(gait, aes(y=TUAG, x = Group)) +
 {: .challenge}
 
 ### 2 samples: Wilcoxon-Mann-Whitney (non-parametric)
-The Mann–Whitney U test, also called the Mann–Whitney–Wilcoxon, Wilcoxon rank-sum test, or Wilcoxon–Mann–Whitney test - is sometimes preferred to the 2 sample t-test when the distribution cannot be assumed to be normal; for a discussion of whether this is appropriate see [here](http://thestatsgeek.com/2014/04/12/is-the-wilcoxon-mann-whitney-test-a-good-non-parametric-alternative-to-the-t-test/). 
+The Mann–Whitney U test, also called the Mann–Whitney–Wilcoxon, Wilcoxon rank-sum test, or Wilcoxon–Mann–Whitney test - is sometimes preferred to the 2 sample t-test when the distribution cannot be assumed to be normal; for a discussion of whether this is appropriate see [here](http://thestatsgeek.com/2014/04/12/is-the-wilcoxon-mann-whitney-test-a-good-non-parametric-alternative-to-the-t-test/).
 
 Thankfully, performing it in R is easier than trying to figure out if it's appropriate...
 
@@ -135,22 +135,46 @@ wilcox.test(TUAG ~ Group, data = gait)
 
 ### More than 2 comparisons: ANOVA
 
-If we want to explore the relationship between a variable and multiple factors, we can use an ANOVA. Many experiments you've told us about are amenable to this analysis technique, for example determining levels of which miRNA are distinct in cancer vs normal tissue (miRNA1, miRNA2, miRNA3, miRNA4 as factor 1, and cancer vs normal as factor 2); whether the concentration of a compound is distinct in WT vs mutant cell lines at different ages (age1, age2, age3) etc. 
+If we want to explore the relationship between a variable and multiple factors, we can use an ANOVA. Many experiments you've told us about are amenable to this analysis technique, for example determining levels of which miRNA are distinct in cancer vs normal tissue (miRNA1, miRNA2, miRNA3, miRNA4 as factor 1, and cancer vs normal as factor 2); whether the concentration of a compound is distinct in WT vs mutant cell lines at different ages (age1, age2, age3) etc.
+
+
+#### One-way ANOVA
+
+We can perform an ANOVA using the `Study` grouping of patients and test the null hypothesis that the mean `TUAG` is the same for all groups
+
+```{r, warning=FALSE, message = FALSE}
+aov_study <- aov(TUAG ~ Study , data = gait)
+summary(aov_study)
+ggplot(gait, aes(y=TUAG, x = Study)) +
+  geom_violin() +
+  theme_bw()
+```
+
+
+#### Two-way ANOVA
 
 We can perform an ANOVA using the `Study` grouping of patients and the `Group`, i.e. whether they are controls or have a PD diagnosis. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups.
 
-We can also code for more complex designs, wehere we expect Height and Weight to not affect the mean TUAG score independently (i.e. code for an interaction term).
+```{r, warning=FALSE, message = FALSE}
+aov_study <- aov(TUAG ~ Study + Group, data = gait)
+summary(aov_study)
+ggplot(gait, aes(y=TUAG, x = Study)) +
+  geom_violin() +
+  theme_bw() +
+  facet_grid(~Group)
+```
+
+
+We can also code for more complex designs, where we expect `Height` and `Weight` to not affect the mean `TUAG` score independently (i.e. code for an interaction term).
+
 
 ```{r, warning=FALSE, message = FALSE}
 names(gait)
-aov_study <- aov(TUAG ~ Study + Group, data = gait) 
-summary(aov_study)
-ggplot(gait, aes(y=TUAG, x = Study)) +geom_violin() +theme_bw() + facet_grid(~Group)
 
-aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait) 
+aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait)
 summary(aov_study2)
 
-aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait) 
+aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait)
 summary(aov_study3)
 
 
@@ -159,10 +183,11 @@ summary(aov_study3)
 Let's assume that the we had sufficient evidence from the ANOVA to reject the null. We would then perform post-hoc tests. For example, we can perform multiple pairwise-comparison between the means of groups using Tukey Honest Significant Differences:
 
 ```{r, warning=FALSE, message = FALSE}
+aov_study <- aov(TUAG ~ Study , data = gait)
 TukeyHSD(aov_study)
 ```
 
-Many, *many* other post-hoc tests are available in R - if you know you'd like to use a specific test, chances R has a package that has it implemented. 
+Many, *many* other post-hoc tests are available in R - if you know you'd like to use a specific test, chances are that R already has a package implemented.
 
 
 
@@ -170,7 +195,7 @@ Many, *many* other post-hoc tests are available in R - if you know you'd like to
 ***
 ## Linear regression
 
-Let's say that for the Parkinson's patients, we want to make a model to predict `UPDRS` score using the `UPDRSM` 
+Let's say that for the Parkinson's patients, we want to make a model to predict `UPDRS` score using the `UPDRSM`
 ```{r, message = FALSE, warning = FALSE}
 gait_pd <- gait %>%
   filter(Group == "PD")
@@ -178,7 +203,8 @@ gait_pd <- gait %>%
 # Let's plot this first
 ggplot(gait_pd, aes(x = UPDRSM, y = UPDRS)) +
   geom_point() +
-  geom_smooth(method = 'lm', se = TRUE) + theme_bw()
+  geom_smooth(method = 'lm', se = TRUE) +
+  theme_bw()
 ```
 
 Fit a linear regression predicting UPDRS using UPDRSM, and look at the summary of the results
@@ -227,21 +253,21 @@ pca_plotdata <- data.frame(pca$x)
 
 # attach the patient diagnosis as we will be colouring in our plot with this
 pca_plotdata <- pca_plotdata %>%
-  mutate(samples = as.factor(golub.cl)) 
+  mutate(samples = as.factor(golub.cl))
 
 # plot PC1 and PC2 with ggplot
 ggplot(pca_plotdata, aes(x = PC1, y = PC2, colour = samples)) +
-  geom_point() + theme_bw()
+  geom_point() +
+  theme_bw()
 
 # inspect the cumulative proportion of variance explained by each PC
 summary(pca)
 
-# quickly plot the cumulative proportion of variance explained using base R's plotting function
-plot(summary(pca)$importance["Cumulative Proportion",])
+# quickly plot the proportion of variance explained by each component using base R's plotting function
+plot(summary(pca)$importance["Proportion of Variance", ])
 
-# and what proportion is explained by each component
-plot(summary(pca)$importance["Proportion of Variance",])
-
+# and now, plot the cumulative proportion of variance explained
+plot(summary(pca)$importance["Cumulative Proportion", ])
 ```
 
 
@@ -254,11 +280,11 @@ library(gplots)
 favgenes <- c(703,717,766,829,896,1037,1334,1665,1817,1834,2002,2124,2386,2600,2645,2801,2851,2939)
 
 # let's make a heatmap of my favourite genes
-heatmap.2(golub[ ,favgenes], 
+heatmap.2(golub[ ,favgenes],
           trace = "none",
           scale = "column",
           RowSideColors = c(rep("yellow", 27), rep("darkgreen", 11)),
-          dendrogram = "both", 
+          dendrogram = "both",
           col = "bluered")
 ```
 
@@ -269,5 +295,3 @@ heatmap.2(golub[ ,favgenes],
 Several of you have asked about analysing so-called Likert data, i.e situations when you are trying to measure respondents attitudes to a particular question or statement (i.e. "very unsatisfied", "unsatisifed", "neither unsatisifed nor satisfied", "satisfied", "very satisfied") etc.
 
 While we don't have the time to go into details of the complexities of analysing this type of data today, they can be analysed in R. Some ideas on how to do this can be found  [here](https://www.st-andrews.ac.uk/media/capod/students/mathssupport/OrdinalexampleR.pdf), [here](https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/), and in [the likert package](https://github.com/jbryer/likert).
-
-
