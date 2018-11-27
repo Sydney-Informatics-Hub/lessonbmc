@@ -5,7 +5,7 @@ title: "Data and statistical analysis"
 author: "Nicholas Ho, Darya Vanichkina, Richard Morris, Maryam Montazerolghaem"
 keypoints:
 - R has a large community of developers creating power tools for data and statistical analysis
-objectives: 
+objectives:
 - Introduction into using R for statistical analysis and visualisation
 questions: R has most common (and uncommon) statistical tests implemented as libraries
 source: Rmd
@@ -14,21 +14,14 @@ teaching: 60
 exercises: 25
 ---
 
-Please run the following code:
-```
-install.packages(c("corrplot", "gplots"))
-# install bioconductor and the multtest package
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("multtest", version = "3.8")
-```
+
 
 ## Data and statistical analysis
 
-We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now we will use core R libraries to perform hypothesis testing and statistical analysis. 
+We have previously shown you how to wrangle your data into the right shape with the tidyverse. Now we will use core R libraries to perform hypothesis testing and statistical analysis.
 
 
-Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data. If you'd like a statistical consultation for your specific project, please [contact Sydney Informatics Hub's statistics team](https://informatics.sydney.edu.au/help/) (select the "less than a day" of help option). 
+Our aim here is not to teach you statistics, but how to use R to perform the most popular statistical analysis on your data. If you'd like a statistical consultation for your specific project, please [contact Sydney Informatics Hub's statistics team](https://informatics.sydney.edu.au/help/) (select the "less than a day" of help option).
 
 > *To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of*
 > - Ronald Fisher 1938
@@ -67,7 +60,7 @@ summary(gait)
                                                           Mean   :16.47  
                                                           3rd Qu.:23.75  
                                                           Max.   :40.00  
-                                                                         
+
     Gender               Age        Height..meters.    Weight..kg.    
  Length:166         Min.   :36.00   Min.   :  1.450   Min.   : 47.00  
  Class :character   1st Qu.:59.00   1st Qu.:  1.655   1st Qu.: 64.00  
@@ -98,7 +91,7 @@ summary(gait)
 
 ## Correlation
 
-Let's explore whether there is correlation between two clinical measures: UPDRS (Unified Parkinson's Disease Rating Scale) and TUAG (Timed Up And Go Test). We will use the Spearman rank correlation here (as opposed to the default method, "pearson"). Remember that the Spearman correlation is useful when there is a monotonic relationship between two continuous or ordinal variables, i.e. the two variables tend change together, but not necessarily at a constant rate (if the rate is expected to be constant, use Pearson). 
+Let's explore whether there is correlation between two clinical measures: UPDRS (Unified Parkinson's Disease Rating Scale) and TUAG (Timed Up And Go Test). We will use the Spearman rank correlation here (as opposed to the default method, "pearson"). Remember that the Spearman correlation is useful when there is a monotonic relationship between two continuous or ordinal variables, i.e. the two variables tend change together, but not necessarily at a constant rate (if the rate is expected to be constant, use Pearson).
 
 
 ~~~
@@ -124,10 +117,10 @@ ggplot(gait, aes(x = TUAG, y = UPDRS)) +
 <img src="../fig/rmd-10-unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="612" style="display: block; margin: auto;" />
 
 > ## Section quiz
-> 1. What's the Spearman's rank correlation coefficient between UPDRS and UPDRSM? 
+> 1. What's the Spearman's rank correlation coefficient between UPDRS and UPDRSM?
 > {: .source}
 > > ## Solution
-> > 1. 
+> > 1.
 > > ~~~
 > > cor(gait$UPDRS, gait$UPDRSM, method = "spearman", use="pairwise.complete.obs")
 > > ~~~
@@ -158,7 +151,7 @@ corrplot(correlations, method = "color")
 <img src="../fig/rmd-10-unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="612" style="display: block; margin: auto;" />
 
 
-## Hypothesis testing 
+## Hypothesis testing
 
 ### 2 samples: t-test (parametric)
 Let's say we want to simply compare the mean of the `TUAG` score between `Group` by using the 2-sample t-test This assumes that the variable in question is normally distributed in the two groups (although it is also relatively robust when this is not the case thanks to the Central Limit Theorem with sample sizes greater than 30).  
@@ -183,8 +176,8 @@ alternative hypothesis: true difference in means is not equal to 0
 95 percent confidence interval:
  -3.680347 -1.846478
 sample estimates:
-mean in group CO mean in group PD 
-        9.292698        12.056111 
+mean in group CO mean in group PD
+        9.292698        12.056111
 ~~~
 {: .output}
 
@@ -192,7 +185,7 @@ mean in group CO mean in group PD
 
 ~~~
 # Let's visualise this data
-ggplot(gait, aes(y=TUAG, x = Group)) + 
+ggplot(gait, aes(y=TUAG, x = Group)) +
   geom_violin() + theme_bw()
 ~~~
 {: .language-r}
@@ -202,7 +195,7 @@ ggplot(gait, aes(y=TUAG, x = Group)) +
 > 1. Perform the Welch 2-sample t-test for TUAG by gender? Generate violin plots of this.
 > {: .source}
 > > ## Solution
-> > 1. 
+> > 1.
 > > ~~~
 > > t.test(TUAG ~ Gender, data = gait)
 > > ggplot(gait, aes(y=TUAG, x = Gender, fill = Gender)) + geom_violin() +theme_bw()
@@ -212,7 +205,7 @@ ggplot(gait, aes(y=TUAG, x = Group)) +
 {: .challenge}
 
 ### 2 samples: Wilcoxon-Mann-Whitney (non-parametric)
-The Mann–Whitney U test, also called the Mann–Whitney–Wilcoxon, Wilcoxon rank-sum test, or Wilcoxon–Mann–Whitney test - is sometimes preferred to the 2 sample t-test when the distribution cannot be assumed to be normal; for a discussion of whether this is appropriate see [here](http://thestatsgeek.com/2014/04/12/is-the-wilcoxon-mann-whitney-test-a-good-non-parametric-alternative-to-the-t-test/). 
+The Mann–Whitney U test, also called the Mann–Whitney–Wilcoxon, Wilcoxon rank-sum test, or Wilcoxon–Mann–Whitney test - is sometimes preferred to the 2 sample t-test when the distribution cannot be assumed to be normal; for a discussion of whether this is appropriate see [here](http://thestatsgeek.com/2014/04/12/is-the-wilcoxon-mann-whitney-test-a-good-non-parametric-alternative-to-the-t-test/).
 
 Thankfully, performing it in R is easier than trying to figure out if it's appropriate...
 
@@ -239,7 +232,7 @@ alternative hypothesis: true location shift is not equal to 0
 
 ### More than 2 comparisons: ANOVA
 
-If we want to explore the relationship between a variable and multiple factors, we can use an ANOVA. Many experiments you've told us about are amenable to this analysis technique, for example determining levels of which miRNA are distinct in cancer vs normal tissue (miRNA1, miRNA2, miRNA3, miRNA4 as factor 1, and cancer vs normal as factor 2); whether the concentration of a compound is distinct in WT vs mutant cell lines at different ages (age1, age2, age3) etc. 
+If we want to explore the relationship between a variable and multiple factors, we can use an ANOVA. Many experiments you've told us about are amenable to this analysis technique, for example determining levels of which miRNA are distinct in cancer vs normal tissue (miRNA1, miRNA2, miRNA3, miRNA4 as factor 1, and cancer vs normal as factor 2); whether the concentration of a compound is distinct in WT vs mutant cell lines at different ages (age1, age2, age3) etc.
 
 
 #### One-way ANOVA
@@ -248,7 +241,7 @@ We can perform an ANOVA using the `Study` grouping of patients and test the null
 
 
 ~~~
-aov_study <- aov(TUAG ~ Study , data = gait) 
+aov_study <- aov(TUAG ~ Study , data = gait)
 summary(aov_study)
 ~~~
 {: .language-r}
@@ -268,9 +261,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 
 ~~~
-ggplot(gait, aes(y=TUAG, x = Study)) + 
-  geom_violin() + 
-  theme_bw() 
+ggplot(gait, aes(y=TUAG, x = Study)) +
+  geom_violin() +
+  theme_bw()
 ~~~
 {: .language-r}
 
@@ -279,11 +272,11 @@ ggplot(gait, aes(y=TUAG, x = Study)) +
 
 #### Two-way ANOVA
 
-We can perform an ANOVA using the `Study` grouping of patients and the `Group`, i.e. whether they are controls or have a PD diagnosis. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups. 
+We can perform an ANOVA using the `Study` grouping of patients and the `Group`, i.e. whether they are controls or have a PD diagnosis. Here, we are testing the null hypothesis that the mean `TUAG` is the same for all groups.
 
 
 ~~~
-aov_study <- aov(TUAG ~ Study + Group, data = gait) 
+aov_study <- aov(TUAG ~ Study + Group, data = gait)
 summary(aov_study)
 ~~~
 {: .language-r}
@@ -304,9 +297,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 
 ~~~
-ggplot(gait, aes(y=TUAG, x = Study)) + 
-  geom_violin() + 
-  theme_bw() + 
+ggplot(gait, aes(y=TUAG, x = Study)) +
+  geom_violin() +
+  theme_bw() +
   facet_grid(~Group)
 ~~~
 {: .language-r}
@@ -337,7 +330,7 @@ names(gait)
 
 
 ~~~
-aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait) 
+aov_study2 <- aov(TUAG ~ Age + Height..meters. + Weight..kg. + Height..meters.:Weight..kg., data = gait)
 summary(aov_study2)
 ~~~
 {: .language-r}
@@ -360,7 +353,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 
 ~~~
-aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait) 
+aov_study3 <- aov(TUAG ~ Age + Height..meters.*Weight..kg., data = gait)
 summary(aov_study3)
 ~~~
 {: .language-r}
@@ -384,7 +377,7 @@ Let's assume that the we had sufficient evidence from the ANOVA to reject the nu
 
 
 ~~~
-aov_study <- aov(TUAG ~ Study , data = gait) 
+aov_study <- aov(TUAG ~ Study , data = gait)
 TukeyHSD(aov_study)
 ~~~
 {: .language-r}
@@ -405,7 +398,7 @@ Si-Ju -0.3207607 -1.837987 1.19646521 0.8711995
 ~~~
 {: .output}
 
-Many, *many* other post-hoc tests are available in R - if you know you'd like to use a specific test, chances are that R already has a package implemented. 
+Many, *many* other post-hoc tests are available in R - if you know you'd like to use a specific test, chances are that R already has a package implemented.
 
 
 
@@ -413,7 +406,7 @@ Many, *many* other post-hoc tests are available in R - if you know you'd like to
 ***
 ## Linear regression
 
-Let's say that for the Parkinson's patients, we want to make a model to predict `UPDRS` score using the `UPDRSM` 
+Let's say that for the Parkinson's patients, we want to make a model to predict `UPDRS` score using the `UPDRSM`
 
 ~~~
 gait_pd <- gait %>%
@@ -422,7 +415,7 @@ gait_pd <- gait %>%
 # Let's plot this first
 ggplot(gait_pd, aes(x = UPDRSM, y = UPDRS)) +
   geom_point() +
-  geom_smooth(method = 'lm', se = TRUE) + 
+  geom_smooth(method = 'lm', se = TRUE) +
   theme_bw()
 ~~~
 {: .language-r}
@@ -445,19 +438,19 @@ Call:
 lm(formula = UPDRS ~ UPDRSM, data = gait_pd)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--9.2820 -4.2972 -0.6608  3.0513 16.3392 
+    Min      1Q  Median      3Q     Max
+-9.2820 -4.2972 -0.6608  3.0513 16.3392
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  4.97901    1.53207    3.25  0.00163 ** 
+(Intercept)  4.97901    1.53207    3.25  0.00163 **
 UPDRSM       1.37879    0.07378   18.69  < 2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 5.359 on 89 degrees of freedom
   (2 observations deleted due to missingness)
-Multiple R-squared:  0.7969,	Adjusted R-squared:  0.7946 
+Multiple R-squared:  0.7969,	Adjusted R-squared:  0.7946
 F-statistic: 349.2 on 1 and 89 DF,  p-value: < 2.2e-16
 ~~~
 {: .output}
@@ -472,8 +465,8 @@ gait_pd_slr$coefficients
 
 
 ~~~
-(Intercept)      UPDRSM 
-   4.979012    1.378788 
+(Intercept)      UPDRSM
+   4.979012    1.378788
 ~~~
 {: .output}
 
@@ -501,8 +494,8 @@ Call:
 lm(formula = UPDRS ~ UPDRSM + Age, data = gait_pd)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--9.8453 -4.1916 -0.5681  2.6996 16.2686 
+    Min      1Q  Median      3Q     Max
+-9.8453 -4.1916 -0.5681  2.6996 16.2686
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)    
@@ -514,7 +507,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 5.33 on 88 degrees of freedom
   (2 observations deleted due to missingness)
-Multiple R-squared:  0.8014,	Adjusted R-squared:  0.7969 
+Multiple R-squared:  0.8014,	Adjusted R-squared:  0.7969
 F-statistic: 177.5 on 2 and 88 DF,  p-value: < 2.2e-16
 ~~~
 {: .output}
@@ -529,8 +522,8 @@ gait_pd_mlr$coefficients
 
 
 ~~~
-(Intercept)      UPDRSM         Age 
--0.97473294  1.39551286  0.08490291 
+(Intercept)      UPDRSM         Age
+-0.97473294  1.39551286  0.08490291
 ~~~
 {: .output}
 
@@ -562,8 +555,8 @@ table(golub.cl)
 
 ~~~
 golub.cl
- 0  1 
-27 11 
+ 0  1
+27 11
 ~~~
 {: .output}
 
@@ -581,11 +574,11 @@ pca_plotdata <- data.frame(pca$x)
 
 # attach the patient diagnosis as we will be colouring in our plot with this
 pca_plotdata <- pca_plotdata %>%
-  mutate(samples = as.factor(golub.cl)) 
+  mutate(samples = as.factor(golub.cl))
 
 # plot PC1 and PC2 with ggplot
 ggplot(pca_plotdata, aes(x = PC1, y = PC2, colour = samples)) +
-  geom_point() + 
+  geom_point() +
   theme_bw()
 ~~~
 {: .language-r}
@@ -644,7 +637,7 @@ plot(summary(pca)$importance["Proportion of Variance", ])
 <img src="../fig/rmd-10-unnamed-chunk-14-2.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="612" style="display: block; margin: auto;" />
 
 ~~~
-# and now, plot the cumulative proportion of variance explained 
+# and now, plot the cumulative proportion of variance explained
 plot(summary(pca)$importance["Cumulative Proportion", ])
 ~~~
 {: .language-r}
@@ -662,11 +655,11 @@ library(gplots)
 favgenes <- c(703,717,766,829,896,1037,1334,1665,1817,1834,2002,2124,2386,2600,2645,2801,2851,2939)
 
 # let's make a heatmap of my favourite genes
-heatmap.2(golub[ ,favgenes], 
+heatmap.2(golub[ ,favgenes],
           trace = "none",
           scale = "column",
           RowSideColors = c(rep("yellow", 27), rep("darkgreen", 11)),
-          dendrogram = "both", 
+          dendrogram = "both",
           col = "bluered")
 ~~~
 {: .language-r}
@@ -680,5 +673,3 @@ heatmap.2(golub[ ,favgenes],
 Several of you have asked about analysing so-called Likert data, i.e situations when you are trying to measure respondents attitudes to a particular question or statement (i.e. "very unsatisfied", "unsatisifed", "neither unsatisifed nor satisfied", "satisfied", "very satisfied") etc.
 
 While we don't have the time to go into details of the complexities of analysing this type of data today, they can be analysed in R. Some ideas on how to do this can be found  [here](https://www.st-andrews.ac.uk/media/capod/students/mathssupport/OrdinalexampleR.pdf), [here](https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/), and in [the likert package](https://github.com/jbryer/likert).
-
-

@@ -15,3 +15,13 @@ exercises: 0
 source("../bin/chunk-options.R")
 knitr_fig_path("01-")
 ```
+
+Please run the following code during the break to install bioconductor and a few packages useful for statistical analysis:
+
+```
+install.packages(c("corrplot", "gplots"))
+# install bioconductor and the multtest package
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("multtest", version = "3.8")
+```
